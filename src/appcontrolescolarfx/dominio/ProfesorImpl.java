@@ -23,15 +23,14 @@ public class ProfesorImpl {
         try{
             
             ResultSet resultado = ProfesorDAO.obtenerProfesores(ConexionBD.abrirConexion());
-            ArrayList<Profesor> profesores;
-            profesores = new ArrayList();
+            ArrayList<Profesor> profesores = new ArrayList<>();
             
             while (resultado.next()){
                 Profesor profesor = new Profesor ();
                 profesor.setIdProfesor(resultado.getInt("idProfesor"));
                 profesor.setNombre(resultado.getString("nombre"));
-                profesor.setApellidoMaterno(resultado.getString("apellidoMaterno"));
                 profesor.setApellidoPaterno(resultado.getString("apellidoPaterno"));
+                profesor.setApellidoMaterno(resultado.getString("apellidoMaterno"));
                 profesor.setNoPersonal(resultado.getString("noPersonal"));
                 profesor.setFechaNacimiento(resultado.getString("fechaNacimiento"));
                 profesor.setFechaContratacion(resultado.getString("fechaContratacion"));
@@ -60,7 +59,7 @@ public class ProfesorImpl {
             
             if (filasAfectadas > 0){
                 respuesta.put("error", false);
-                respuesta.put("mensaje", "El registro del profesor" + profesor.getNombre() +" fue guardada de manera exitosa");
+                respuesta.put("mensaje", "El registro del profesor" + profesor.getNombre() +" fue guardado de manera exitosa");
                 
             }else{
                 respuesta.put("error", true);

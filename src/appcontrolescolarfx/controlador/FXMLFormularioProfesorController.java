@@ -76,7 +76,6 @@ public class FXMLFormularioProfesorController implements Initializable {
         }else{
             Utilidades.mostrarAlertaSimple("Error al cargar roles del sistema", respuesta.get("mensaje").toString(), Alert.AlertType.ERROR);
         }
-        
     }
     
     private boolean sonCamposValidos(){
@@ -133,14 +132,13 @@ public class FXMLFormularioProfesorController implements Initializable {
         
         Profesor profesorNuevo = obtenerProfesor ();
         HashMap<String, Object> resultado = ProfesorImpl.registrarProfesor(profesorNuevo);
-        if((boolean)resultado.get(("error"))){
+        if(!(boolean)resultado.get(("error"))){
             Utilidades.mostrarAlertaSimple("Profesor regitrado correctamente", resultado.get("mensaje").toString(), Alert.AlertType.INFORMATION);
             observador.notificarOperacionExitosa("registrar", profesorNuevo.getNombre());
             cerrarVentana();
         }else{
             Utilidades.mostrarAlertaSimple("Error al registrar", resultado.get("error").toString(), Alert.AlertType.ERROR);
         }
-        
     }
     
     
@@ -166,6 +164,6 @@ public class FXMLFormularioProfesorController implements Initializable {
             
     private void cerrarVentana(){
         //El orden de casteo se ejecuta desde el intento de casteo (primero la instruccion, luego el casteo)
-        ((Stage) textNombre.getScene().getWindow()).close();
+        ((Stage) textNumPersonal.getScene().getWindow()).close();
     }
 }

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="450.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="appcontrolescolarfx.controlador.FXMLPrincipalController">
+   <children>
+      <Pane layoutY="-2.0" prefHeight="94.0" prefWidth="650.0" style="-fx-background-color: #18529D;">
+         <children>
+            <ImageView fitHeight="94.0" fitWidth="140.0" layoutX="9.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../recurso/flor-azul.jpg" />
+               </image>
+            </ImageView>
+            <Label layoutX="121.0" layoutY="37.0" text="Universidad Veracruzana" textFill="WHITE">
+               <font>
+                  <Font name="Arial Bold" size="24.0" />
+               </font>
+            </Label>
+            <GridPane layoutX="417.0" layoutY="74.0" prefHeight="18.0" prefWidth="201.0">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="95.20001220703125" minWidth="10.0" prefWidth="33.60003662109375" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="166.39996337890625" minWidth="10.0" prefWidth="166.39996337890625" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Label text="Rol:" textFill="WHITE">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="labelRol" prefHeight="18.0" prefWidth="161.0" text="Label" textFill="WHITE" GridPane.columnIndex="1" />
+               </children>
+            </GridPane>
+         </children>
+      </Pane>
+      <Pane layoutY="91.0" prefHeight="360.0" prefWidth="650.0">
+         <children>
+            <GridPane layoutX="34.0" layoutY="32.0" prefHeight="91.0" prefWidth="187.0">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Label text="Bienvenido (a)">
+                     <font>
+                        <Font size="19.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="labelNombre" text="Label" GridPane.rowIndex="1">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="labelNumTrabajador" text="Label" GridPane.rowIndex="2" />
+               </children>
+            </GridPane>
+            <ImageView fitHeight="140.0" fitWidth="260.0" layoutX="390.0" layoutY="220.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../recurso/milocopafuera.jpg" />
+               </image>
+            </ImageView>
+            <Button fx:id="botonSalir" layoutX="541.0" layoutY="275.0" mnemonicParsing="false" onAction="#cerrarVentana" text="Salir" />
+            <GridPane layoutX="447.0" layoutY="6.0" prefHeight="218.0" prefWidth="187.0">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Button fx:id="botonAdminProfesores" mnemonicParsing="false" onAction="#clicAdminProfesores" prefHeight="57.0" prefWidth="229.0" text="Admnistracion de Profesores" />
+                  <Button fx:id="botonAdminAlumnos" mnemonicParsing="false" onAction="#clicAdminAlumnos" prefHeight="57.0" prefWidth="229.0" text="Admnistración de alumnos" GridPane.rowIndex="1" />
+                  <Button fx:id="botonAdminCarreras" mnemonicParsing="false" onAction="#clicAdminCarreras" prefHeight="57.0" prefWidth="229.0" text="Adminsitración de Carreras" GridPane.rowIndex="2" />
+               </children>
+            </GridPane>
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>

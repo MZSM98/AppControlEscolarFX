@@ -1,0 +1,45 @@
+# Archivos de clase compilados de Java
+*.class
+
+# Directorios estándar de salida de Ant
+build/
+dist/
+
+# Archivos de propiedades locales (no deben ir al repositorio)
+local.properties
+build.properties
+
+# Logs
+logs/
+*.log
+
+### Archivos de NetBeans (de tu lista original) ###
+nbproject/private/
+nbbuild/
+nbdist/
+nbactions.xml
+nb-configuration.xml
+
+### Archivos de otros IDEs (Recomendado) ###
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# Eclipse
+.project
+.classpath
+.settings/
+bin/
+
+### Archivos de Sistema Operativo ###
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+

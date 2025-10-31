@@ -115,14 +115,15 @@ public class FXMLAdminProfesorController implements Initializable, IObservador {
             FXMLLoader cargador = 
             Utilidades.obtenerVistaMemoria("vista/FXMLFormularioProfesor.fxml");
             Parent vista = cargador.load();
+            FXMLFormularioProfesorController controlador = cargador.getController();
+            controlador.inicializarDatos(this, profesor);
             Scene escena = new Scene(vista);
             Stage escenario = new Stage();
             escenario.setTitle("Formulario profesores");
             escenario.setScene(escena);
             escenario.initModality(Modality.APPLICATION_MODAL);
             escenario.showAndWait();
-            FXMLFormularioProfesorController controlador = cargador.getController();
-            controlador.inicializarDatos(this, profesor);
+            
         }catch (IOException ioe){
             ioe.printStackTrace();
         }

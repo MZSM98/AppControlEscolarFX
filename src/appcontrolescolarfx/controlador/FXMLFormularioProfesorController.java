@@ -51,7 +51,13 @@ public class FXMLFormularioProfesorController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         cargarRolesProfesor();
     }    
-
+    
+    public void inicializarDatos(IObservador observador, Profesor profesor){
+        this.observador = observador;
+        profesorEdicion = profesor;
+        //Cargar datos a la pantalla de edicion
+    }
+    
     @FXML
     private void cerrarRegistro(ActionEvent event) {
             cerrarVentana();
@@ -82,10 +88,25 @@ public class FXMLFormularioProfesorController implements Initializable {
         boolean valido = true;
         String mensajeError = "Se encontraron los siguientes errores: \n";
         
+        HashMap<String, Object> respuesta = ProfesorImpl.verificarDuplicado(textNumPersonal.getText());
+        boolean existe = (boolean)respuesta.get("existencia");
+        
+        if (existe){
+            valido = false;
+            mensajeError += respuesta.get("mensaje");
+        }
+        
+        if(textNumPersonal.getText().isEmpty()){
+            valido = false;
+            mensajeError += "-Numero de personal requerido.\n";
+            
+        }
+        
         if(textNombre.getText().isEmpty()){
             valido = false;
             mensajeError += "-Nombre del profesor requerido.\n";
         }
+        
         if(textApellidoPaterno.getText().isEmpty()){
             valido = false;
             mensajeError += "-Apellido Paterno obligatorio.\n";
@@ -96,13 +117,6 @@ public class FXMLFormularioProfesorController implements Initializable {
             mensajeError += "-Apellido Materno requerido.\n";
             
         }
-        
-        if(textNumPersonal.getText().isEmpty()){
-            valido = false;
-            mensajeError += "-Numero de personal requerido.\n";
-            
-        }
-        
         if (textContrasena.getText().isEmpty()){
             valido = false;
             mensajeError += "-Contraseña requerida.\n";
@@ -156,11 +170,7 @@ public class FXMLFormularioProfesorController implements Initializable {
         return profesor;
     }
     
-    public void inicializarDatos(IObservador observador, Profesor profesor){
-        this.observador = observador;
-        profesorEdicion = profesor;
-        //Cargar datos a la pantalla de edicion
-    }
+    
             
     private void cerrarVentana(){
         //El orden de casteo se ejecuta desde el intento de casteo (primero la instruccion, luego el casteo)

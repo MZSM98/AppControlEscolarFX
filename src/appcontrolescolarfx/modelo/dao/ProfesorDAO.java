@@ -54,4 +54,20 @@ public class ProfesorDAO {
         throw new SQLException("No hay conexion a la base de datos.");
         
     }
+    
+    public static ResultSet verificarNumeroPersonal(Connection conexionBD, String noPersonal) throws SQLException{
+        
+        if (conexionBD != null){
+            
+            String consulta = "SELECT * from profesor where noPersonal = ?;";
+            
+            PreparedStatement sentencia = conexionBD.prepareStatement(consulta);
+            sentencia.setString(1, noPersonal);
+            return sentencia.executeQuery();
+                    
+        }
+        throw new SQLException("No hay conexion a la base de datos");
+    }
+    
+    
 }

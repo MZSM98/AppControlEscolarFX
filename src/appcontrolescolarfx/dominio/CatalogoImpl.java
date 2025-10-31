@@ -3,7 +3,10 @@ package appcontrolescolarfx.dominio;
 
 import appcontrolescolarfx.modelo.ConexionBD;
 import appcontrolescolarfx.modelo.dao.CatalogoDAO;
+import appcontrolescolarfx.modelo.dao.ProfesorDAO;
+import appcontrolescolarfx.modelo.pojo.Profesor;
 import appcontrolescolarfx.modelo.pojo.Rol;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -38,4 +41,5 @@ public class CatalogoImpl {
         
         return respuesta;
     }
+    
 }

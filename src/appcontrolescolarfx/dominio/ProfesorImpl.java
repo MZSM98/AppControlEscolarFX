@@ -54,6 +54,7 @@ public class ProfesorImpl {
         
         HashMap<String, Object> respuesta = new LinkedHashMap<>();
         
+        
         try{
             int filasAfectadas = ProfesorDAO.registrarProfesor(profesor, ConexionBD.abrirConexion());
             
@@ -71,5 +72,24 @@ public class ProfesorImpl {
             respuesta.put("mensaje", sqle.getMessage());
         }
         return respuesta;
+    }
+    
+    public static HashMap<String, Object> verificarDuplicado(String noPersonal){
+           HashMap <String, Object> respuesta = new HashMap<>();
+           
+           try {
+               ResultSet resultado = ProfesorDAO.verificarNumeroPersonal(ConexionBD.abrirConexion(), noPersonal);
+               
+               if (!resultado.next()){
+                   respuesta.put("existencia", false);
+               }else{
+                   respuesta.put("existencia", true);
+                   respuesta.put("mensaje", "-El numero de trabajador (" + noPersonal + ") ya esta en uso\n");
+               }
+               ConexionBD.cerrarConexionBD();
+           }catch (SQLException sqle){
+               respuesta.put("error", sqle.getMessage());
+           }
+           return respuesta;
     }
 }

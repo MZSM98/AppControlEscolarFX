@@ -51,7 +51,7 @@ public class FXMLPrincipalController implements Initializable {
     
     public void obtenerSesion(Profesor profesorSesion){
         
-        labelNombre.setText(profesorSesion.getNombre() + " "+ profesorSesion.getApellidoParterno()
+        labelNombre.setText(profesorSesion.getNombre() + " "+ profesorSesion.getApellidoPaterno()
                 + " " +profesorSesion.getApellidoMaterno());
         labelNumTrabajador.setText(profesorSesion.getNoPersonal());
         labelRol.setText(profesorSesion.getRol());

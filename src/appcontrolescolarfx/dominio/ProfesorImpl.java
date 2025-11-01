@@ -4,6 +4,7 @@ package appcontrolescolarfx.dominio;
 import appcontrolescolarfx.modelo.ConexionBD;
 import appcontrolescolarfx.modelo.dao.ProfesorDAO;
 import appcontrolescolarfx.modelo.pojo.Profesor;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -35,7 +36,8 @@ public class ProfesorImpl {
                 profesor.setFechaNacimiento(resultado.getString("fechaNacimiento"));
                 profesor.setFechaContratacion(resultado.getString("fechaContratacion"));
                 profesor.setIdRol(resultado.getInt("idRol"));
-                profesor.setRol(resultado.getString("Rol"));
+                profesor.setRol(resultado.getString("rol"));
+                profesor.setPassword(resultado.getString("password"));
                 profesores.add(profesor);
                 
             }
@@ -74,22 +76,36 @@ public class ProfesorImpl {
         return respuesta;
     }
     
-    public static HashMap<String, Object> verificarDuplicado(String noPersonal){
-           HashMap <String, Object> respuesta = new HashMap<>();
+    public static boolean verificarDuplicado(String noPersonal){
            
-           try {
-               ResultSet resultado = ProfesorDAO.verificarNumeroPersonal(ConexionBD.abrirConexion(), noPersonal);
-               
-               if (!resultado.next()){
-                   respuesta.put("existencia", false);
-               }else{
-                   respuesta.put("existencia", true);
-                   respuesta.put("mensaje", "-El numero de trabajador (" + noPersonal + ") ya esta en uso\n");
-               }
-               ConexionBD.cerrarConexionBD();
-           }catch (SQLException sqle){
-               respuesta.put("error", sqle.getMessage());
-           }
-           return respuesta;
+        try {
+            return ProfesorDAO.verificarNumeroPersonal(ConexionBD.abrirConexion(), noPersonal);
+        }catch (SQLException sqle){
+            sqle.printStackTrace();//Tengo que cambiar esto
+            return false;
+        }finally{
+            ConexionBD.cerrarConexionBD();
+        }
+    }
+    
+    public static HashMap<String, Object> editarProfesor(Profesor profesor){
+        HashMap<String, Object> respuesta = new LinkedHashMap<>();
+        
+        try{
+            int filasAfectadas = ProfesorDAO.editarProfesor(profesor, ConexionBD.abrirConexion());
+            
+            if (filasAfectadas > 0){
+                respuesta.put("error", false);
+                respuesta.put("mensaje", "El registro del profesor" + profesor.getNombre() +" fue modificada de manera exitosa");
+            }else{
+                respuesta.put("error", true);
+                respuesta.put("mensaje", "No se pudo modificar la información, inténtelo más tarde");
+            }
+            ConexionBD.cerrarConexionBD();
+        }catch (SQLException sqle){
+            respuesta.put("error", true);
+            respuesta.put("mensaje", sqle.getMessage());
+        }
+        return respuesta;
     }
 }

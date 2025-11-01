@@ -24,7 +24,7 @@ public class ProfesorDAO {
             
             PreparedStatement sentencia = conexionBD.prepareStatement(insert);
             sentencia.setString(1, profesor.getNombre());
-            sentencia.setString(2, profesor.getApellidoParterno());
+            sentencia.setString(2, profesor.getApellidoPaterno());
             sentencia.setString(3, profesor.getApellidoMaterno());
             sentencia.setString(4, profesor.getNoPersonal());
             sentencia.setString(5, profesor.getPassword());
@@ -41,7 +41,7 @@ public class ProfesorDAO {
         
         if (conexionBD != null){
            
-                String consulta = "SELECT idProfesor, nombre, apellidoPaterno, apellidoMaterno, noPersonal, fechaNacimiento, " +
+                String consulta = "SELECT idProfesor, nombre, apellidoPaterno, apellidoMaterno, noPersonal, fechaNacimiento, password, " +
                     "fechaContratacion, profesor.idRol, Rol " +
                     "FROM " +
                     "profesor " +
@@ -55,19 +55,35 @@ public class ProfesorDAO {
         
     }
     
-    public static ResultSet verificarNumeroPersonal(Connection conexionBD, String noPersonal) throws SQLException{
+    public static boolean verificarNumeroPersonal(Connection conexionBD, String noPersonal) throws SQLException{
         
         if (conexionBD != null){
             
-            String consulta = "SELECT * from profesor where noPersonal = ?;";
+            String consulta = "SELECT count(*) FROM profesor WHERE noPersonal = ?;";
             
             PreparedStatement sentencia = conexionBD.prepareStatement(consulta);
             sentencia.setString(1, noPersonal);
-            return sentencia.executeQuery();
-                    
+            return sentencia.executeQuery().next();
         }
         throw new SQLException("No hay conexion a la base de datos");
     }
     
+    public static int editarProfesor(Profesor profesor, Connection conexionBD) throws SQLException{
+        
+        if (conexionBD != null ){
+            
+            return 0;
+        }
+        throw new SQLException();
+    }
     
+    public static int eliminarProfesor(int idProfesor, Connection conexionBD) throws SQLException{
+        
+        if(conexionBD != null){
+            
+            return 0;
+        }
+        
+        throw new SQLException();
+    }
 }

@@ -6,7 +6,7 @@ public class Profesor {
 
     private int idProfesor;
     private String nombre;
-    private String apellidoParterno;
+    private String apellidoPaterno;
     private String apellidoMaterno;
     private String noPersonal;
     private String password;
@@ -21,7 +21,7 @@ public class Profesor {
     public Profesor(int idProfesor, String nombre, String apellidoParterno, String apellidoMaterno, String noPersonal, String passwrod, String fechaNacimiento, String fechaContratacion, int idRol, String rol) {
         this.idProfesor = idProfesor;
         this.nombre = nombre;
-        this.apellidoParterno = apellidoParterno;
+        this.apellidoPaterno = apellidoParterno;
         this.apellidoMaterno = apellidoMaterno;
         this.noPersonal = noPersonal;
         this.password = passwrod;
@@ -57,12 +57,12 @@ public class Profesor {
         this.nombre = nombre;
     }
 
-    public String getApellidoParterno() {
-        return apellidoParterno;
+    public String getApellidoPaterno() {
+        return apellidoPaterno;
     }
 
     public void setApellidoPaterno(String apellidoParterno) {
-        this.apellidoParterno = apellidoParterno;
+        this.apellidoPaterno = apellidoParterno;
     }
 
     public String getApellidoMaterno() {

@@ -98,7 +98,12 @@ public class FXMLAdminProfesorController implements Initializable, IObservador {
     @FXML
     private void modificarProfesor(ActionEvent event) {
         
-        
+        Profesor profesorSeleccionado = tablaProfesores.getSelectionModel().getSelectedItem();
+        if (profesorSeleccionado != null){
+            irFormulario(profesorSeleccionado);
+        }else{
+            Utilidades.mostrarAlertaSimple("Selecciona un profesor", "Para modificar la información de un profesor, primero debes seleccionarlo" , Alert.AlertType.WARNING);
+        }
     }
 
     @FXML

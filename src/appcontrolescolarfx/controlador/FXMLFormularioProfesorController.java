@@ -7,6 +7,7 @@ import appcontrolescolarfx.interfaces.IObservador;
 import appcontrolescolarfx.modelo.pojo.Profesor;
 import appcontrolescolarfx.modelo.pojo.Rol;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -52,11 +53,6 @@ public class FXMLFormularioProfesorController implements Initializable {
         cargarRolesProfesor();
     }    
     
-    public void inicializarDatos(IObservador observador, Profesor profesor){
-        this.observador = observador;
-        profesorEdicion = profesor;
-        //Cargar datos a la pantalla de edicion
-    }
     
     @FXML
     private void cerrarRegistro(ActionEvent event) {
@@ -67,7 +63,12 @@ public class FXMLFormularioProfesorController implements Initializable {
     private void guardarRegistro(ActionEvent event) {
         
         if (sonCamposValidos()){
-           registrarProfesor();
+            if(profesorEdicion == null){
+                registrarProfesor();
+            }else{
+                editarProfesor();
+            }
+           
         }
     }
     
@@ -88,12 +89,11 @@ public class FXMLFormularioProfesorController implements Initializable {
         boolean valido = true;
         String mensajeError = "Se encontraron los siguientes errores: \n";
         
-        HashMap<String, Object> respuesta = ProfesorImpl.verificarDuplicado(textNumPersonal.getText());
-        boolean existe = (boolean)respuesta.get("existencia");
+        boolean existe = ProfesorImpl.verificarDuplicado(textNumPersonal.getText());
         
         if (existe){
             valido = false;
-            mensajeError += respuesta.get("mensaje");
+            mensajeError += "-El numero de trabajador (" + textNumPersonal.getText() + ") ya esta en uso\n";
         }
         
         if(textNumPersonal.getText().isEmpty()){
@@ -105,8 +105,8 @@ public class FXMLFormularioProfesorController implements Initializable {
         if(textNombre.getText().isEmpty()){
             valido = false;
             mensajeError += "-Nombre del profesor requerido.\n";
+            
         }
-        
         if(textApellidoPaterno.getText().isEmpty()){
             valido = false;
             mensajeError += "-Apellido Paterno obligatorio.\n";
@@ -175,5 +175,47 @@ public class FXMLFormularioProfesorController implements Initializable {
     private void cerrarVentana(){
         //El orden de casteo se ejecuta desde el intento de casteo (primero la instruccion, luego el casteo)
         ((Stage) textNumPersonal.getScene().getWindow()).close();
+    }
+    
+    public void inicializarDatos(IObservador observador, Profesor profesor){
+        this.observador = observador;
+        profesorEdicion = profesor;
+        
+        if (profesor != null){
+            textNombre.setText(profesor.getNombre());
+            textApellidoPaterno.setText(profesor.getApellidoPaterno());
+            textApellidoMaterno.setText(profesor.getApellidoMaterno());
+            textContrasena.setText(profesor.getPassword());
+            textNumPersonal.setText(profesor.getNoPersonal());
+            textNumPersonal.setEditable(false);
+            textNumPersonal.setDisable(true);
+            pickerContratacion.setValue(LocalDate.parse(profesor.getFechaContratacion()));
+            pickerNacimiento.setValue(LocalDate.parse(profesor.getFechaNacimiento()));
+            
+            int posicion = obtenerRolSeleccionado(profesor.getIdRol());
+            comboRol.getSelectionModel().select(posicion);
+        }
+    }
+    
+    private int obtenerRolSeleccionado(int idRol){
+        for (int i = 0; i < roles.size(); i++){
+            if (roles.get(i).getIdRol() == idRol){
+                return i;
+            }
+        }
+        return -1;
+    }
+    
+    private void editarProfesor(){
+        Profesor profesorEdicion = obtenerProfesor();
+        profesorEdicion.setIdProfesor(this.profesorEdicion.getIdProfesor());
+        HashMap<String, Object> resultado = ProfesorImpl.editarProfesor(profesorEdicion);
+        if(!(boolean)resultado.get(("error"))){
+            Utilidades.mostrarAlertaSimple("Profesor regitrado correctamente", resultado.get("mensaje").toString(), Alert.AlertType.INFORMATION);
+            observador.notificarOperacionExitosa("editar", profesorEdicion.getNombre());
+            cerrarVentana();
+        }else{
+            Utilidades.mostrarAlertaSimple("Error al editar", resultado.get("error").toString(), Alert.AlertType.ERROR);
+        }
     }
 }

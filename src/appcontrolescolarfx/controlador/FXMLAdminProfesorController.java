@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -18,6 +19,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -35,12 +37,6 @@ public class FXMLAdminProfesorController implements Initializable, IObservador {
 
     @FXML
     private TextField textBuscar;
-    @FXML
-    private Button botonRegistrar;
-    @FXML
-    private Button botonModificar;
-    @FXML
-    private Button botonEliminar;
     @FXML
     private TableView<Profesor> tablaProfesores;
     @FXML
@@ -108,6 +104,20 @@ public class FXMLAdminProfesorController implements Initializable, IObservador {
 
     @FXML
     private void eliminarProfesor(ActionEvent event) {
+        Profesor profesorSeleccionado = tablaProfesores.getSelectionModel().getSelectedItem();
+        
+        if (profesorSeleccionado != null){
+            boolean confirmacion;
+            confirmacion = Utilidades.mostrarAlertaConfirmacion("Confirmar Eliminacion", "Está a punto de eliminar el registro del profesor(a) "
+                    + profesorSeleccionado.getNombre() + " esta acción no se puede revertir", "¿está seguro de continuar?");
+            
+            if(confirmacion){
+                ProfesorImpl.eliminarProfesor(profesorSeleccionado.getIdProfesor());
+                llenarTabla();
+            }
+        }else{
+            Utilidades.mostrarAlertaSimple("Seleccione un profesor", "Para eliminar a un profesor, primero debes seleccionarlo", Alert.AlertType.WARNING);
+        }
     }
 
     @FXML

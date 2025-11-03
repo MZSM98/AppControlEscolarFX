@@ -97,7 +97,6 @@ public class FXMLInicioSesionController implements Initializable {
             Parent vista = cargador.load();
             FXMLPrincipalController controlador = cargador.getController();
             controlador.obtenerSesion(profesorSesion);
-            //creamos escena y reutilizamos escenarios
             Scene escena = new Scene(vista);      
             Stage escenario = (Stage) tfNumPersonal.getScene().getWindow();
             escenario.setScene(escena);

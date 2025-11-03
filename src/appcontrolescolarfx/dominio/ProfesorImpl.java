@@ -4,7 +4,6 @@ package appcontrolescolarfx.dominio;
 import appcontrolescolarfx.modelo.ConexionBD;
 import appcontrolescolarfx.modelo.dao.ProfesorDAO;
 import appcontrolescolarfx.modelo.pojo.Profesor;
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -96,13 +95,35 @@ public class ProfesorImpl {
             
             if (filasAfectadas > 0){
                 respuesta.put("error", false);
-                respuesta.put("mensaje", "El registro del profesor" + profesor.getNombre() +" fue modificada de manera exitosa");
+                respuesta.put("mensaje", "El registro del profesor(a) " + profesor.getNombre() +" fue modificado de manera exitosa");
             }else{
                 respuesta.put("error", true);
                 respuesta.put("mensaje", "No se pudo modificar la información, inténtelo más tarde");
             }
             ConexionBD.cerrarConexionBD();
         }catch (SQLException sqle){
+            respuesta.put("error", true);
+            respuesta.put("mensaje", sqle.getMessage());
+        }
+        return respuesta;
+    }
+    
+    public static HashMap<String, Object> eliminarProfesor(int idProfesor){
+        HashMap<String, Object> respuesta = new LinkedHashMap<>();
+        
+        try{
+            int filasAfectadas = ProfesorDAO.eliminarProfesor(idProfesor, ConexionBD.abrirConexion());
+            
+            if(filasAfectadas > 0){
+                respuesta.put("error", false);
+                respuesta.put("mensaje", "El registro del profesor ha sido eliminado de manera exitosa");
+                
+            }else{
+                respuesta.put("error", true);
+                respuesta.put("mensaje", "No se pudo eliminar el registro, inténtelo más tarde");
+            }
+            ConexionBD.cerrarConexionBD();
+        }catch(SQLException sqle){
             respuesta.put("error", true);
             respuesta.put("mensaje", sqle.getMessage());
         }

@@ -59,7 +59,7 @@ public class ProfesorDAO {
         
         if (conexionBD != null){
             
-            String consulta = "SELECT count(*) FROM profesor WHERE noPersonal = ?;";
+            String consulta = "SELECT * FROM profesor WHERE noPersonal = ?;";
             
             PreparedStatement sentencia = conexionBD.prepareStatement(consulta);
             sentencia.setString(1, noPersonal);
@@ -71,19 +71,34 @@ public class ProfesorDAO {
     public static int editarProfesor(Profesor profesor, Connection conexionBD) throws SQLException{
         
         if (conexionBD != null ){
-            
-            return 0;
+            String actualizar = "UPDATE profesor SET nombre = ?,"
+                    + " apellidoPaterno = ?,"
+                    + " apellidoMaterno = ?, fechaNacimiento = ?,"
+                    + " fechaContratacion = ?, idRol = ?, password = ? where noPersonal = ?;";
+            PreparedStatement sentencia = conexionBD.prepareStatement(actualizar);
+            sentencia.setString(1, profesor.getNombre());
+            sentencia.setString(2, profesor.getApellidoPaterno());
+            sentencia.setString(3, profesor.getApellidoMaterno());
+            sentencia.setString(4, profesor.getFechaNacimiento());
+            sentencia.setString(5, profesor.getFechaContratacion());
+            sentencia.setInt(6, profesor.getIdRol());
+            sentencia.setString(7, profesor.getPassword());
+            sentencia.setString(8, profesor.getNoPersonal());
+            return sentencia.executeUpdate();
         }
-        throw new SQLException();
+        throw new SQLException("No hay conexion a la base de datos");
     }
     
     public static int eliminarProfesor(int idProfesor, Connection conexionBD) throws SQLException{
         
         if(conexionBD != null){
+            String eliminar = "DELETE from profesor where idProfesor = ?;";
             
-            return 0;
+            PreparedStatement sentencia = conexionBD.prepareStatement(eliminar);
+            sentencia.setInt(1, idProfesor);
+            return sentencia.executeUpdate();
         }
         
-        throw new SQLException();
+        throw new SQLException("No hay conexion a la base de datos");
     }
 }

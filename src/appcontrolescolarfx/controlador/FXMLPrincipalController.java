@@ -14,6 +14,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -24,20 +25,10 @@ import javafx.stage.Stage;
  */
 public class FXMLPrincipalController implements Initializable {
 
-    
-
     @FXML
     private Label labelNombre;
     @FXML
     private Label labelNumTrabajador;
-    @FXML
-    private Button botonSalir;
-    @FXML
-    private Button botonAdminProfesores;
-    @FXML
-    private Button botonAdminAlumnos;
-    @FXML
-    private Button botonAdminCarreras;
     @FXML
     private Label labelRol;
 
@@ -56,23 +47,6 @@ public class FXMLPrincipalController implements Initializable {
         labelNumTrabajador.setText(profesorSesion.getNoPersonal());
         labelRol.setText(profesorSesion.getRol());
         
-    }
-
-    @FXML
-    private void cerrarVentana(ActionEvent event) {
-        
-        
-        try{
-            Parent vista = FXMLLoader.load(AppControlEscolarFX.class.getResource("vista/FXMLInicioSesion.fxml"));
-            Scene escena = new Scene(vista);
-            Stage stActual = (Stage)labelNombre.getScene().getWindow();
-            stActual.setTitle("Iniciar Sesion");
-            stActual.setScene(escena);
-            stActual.show();
-        
-        }catch (IOException ioe){
-            ioe.printStackTrace();
-        }
     }
 
     @FXML
@@ -100,5 +74,20 @@ public class FXMLPrincipalController implements Initializable {
     @FXML
     private void clicAdminCarreras(ActionEvent event) {
     }
-    
+
+    @FXML
+    private void cerrarVentana(MouseEvent event) {
+        try{
+            Parent vista = FXMLLoader.load(AppControlEscolarFX.class.getResource("vista/FXMLInicioSesion.fxml"));
+            Scene escena = new Scene(vista);
+            Stage stActual = (Stage)labelNombre.getScene().getWindow();
+            stActual.setTitle("Iniciar Sesion");
+            stActual.setScene(escena);
+            stActual.show();
+        
+        }catch (IOException ioe){
+            ioe.printStackTrace();
+        }
+    }
+
 }

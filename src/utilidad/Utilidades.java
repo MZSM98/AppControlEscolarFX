@@ -1,8 +1,11 @@
 
 package utilidad;
 
+import java.util.Optional;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.DialogPane;
 
 
 public class Utilidades {
@@ -18,6 +21,24 @@ public class Utilidades {
         alerta.setHeaderText(null);
         alerta.setContentText(contenido);
         alerta.showAndWait();
+    }
+    
+    public static boolean mostrarAlertaConfirmacion(String titulo, String encabezado, String contenido){
+        boolean confirmacion = false;
+        Alert alerta = new Alert(Alert.AlertType.CONFIRMATION);
+        alerta.setTitle(titulo);
+        alerta.setHeaderText(encabezado);
+        alerta.setContentText(contenido);
+        ButtonType botonSi = new ButtonType("Sí");
+        ButtonType botonNo = new ButtonType ("No");
+        alerta.getButtonTypes().setAll(botonSi, botonNo);
+        Optional<ButtonType> opcion = alerta.showAndWait();
+        
+        if (opcion.isPresent() && opcion.get() == botonSi){
+            confirmacion = true;
+        }
+
+            return confirmacion;
     }
     
     public static FXMLLoader obtenerVistaMemoria(String url){

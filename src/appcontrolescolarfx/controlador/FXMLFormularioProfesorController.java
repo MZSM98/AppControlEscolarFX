@@ -89,13 +89,7 @@ public class FXMLFormularioProfesorController implements Initializable {
         boolean valido = true;
         String mensajeError = "Se encontraron los siguientes errores: \n";
         
-        boolean existe = ProfesorImpl.verificarDuplicado(textNumPersonal.getText());
-        
-        if (existe){
-            valido = false;
-            mensajeError += "-El numero de trabajador (" + textNumPersonal.getText() + ") ya esta en uso\n";
-        }
-        
+                
         if(textNumPersonal.getText().isEmpty()){
             valido = false;
             mensajeError += "-Numero de personal requerido.\n";
@@ -143,10 +137,17 @@ public class FXMLFormularioProfesorController implements Initializable {
     }
     
     private void registrarProfesor(){
-        
         Profesor profesorNuevo = obtenerProfesor ();
+        
+        if (ProfesorImpl.verificarDuplicado(profesorNuevo.getNoPersonal())){
+            Utilidades.mostrarAlertaSimple("Numero de Personal en uso", "el numero de personal (" +
+                    profesorNuevo.getNoPersonal() +
+                    ") ya se encuentra en uso, intente con uno diferente", Alert.AlertType.WARNING);
+            return;
+        }
+        
         HashMap<String, Object> resultado = ProfesorImpl.registrarProfesor(profesorNuevo);
-        if(!(boolean)resultado.get(("error"))){
+        if(!(boolean)resultado.get(("error") )){
             Utilidades.mostrarAlertaSimple("Profesor regitrado correctamente", resultado.get("mensaje").toString(), Alert.AlertType.INFORMATION);
             observador.notificarOperacionExitosa("registrar", profesorNuevo.getNombre());
             cerrarVentana();
@@ -173,7 +174,6 @@ public class FXMLFormularioProfesorController implements Initializable {
     
             
     private void cerrarVentana(){
-        //El orden de casteo se ejecuta desde el intento de casteo (primero la instruccion, luego el casteo)
         ((Stage) textNumPersonal.getScene().getWindow()).close();
     }
     
@@ -218,4 +218,5 @@ public class FXMLFormularioProfesorController implements Initializable {
             Utilidades.mostrarAlertaSimple("Error al editar", resultado.get("error").toString(), Alert.AlertType.ERROR);
         }
     }
+    
 }

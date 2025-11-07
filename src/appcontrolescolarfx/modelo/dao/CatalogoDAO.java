@@ -22,7 +22,28 @@ public class CatalogoDAO {
         }else {
             throw new SQLException("Lo sentimos, no hay conexion a la base de datos");
         }
+    }
+    
+    public static ResultSet obtenerFacultades (Connection ConexionBD) throws SQLException{
         
+        if(ConexionBD != null){
+            String consulta = "Select * from facultad";
+            PreparedStatement sentencia = ConexionBD.prepareStatement(consulta);
+            return sentencia.executeQuery();
+        }else{
+            throw new SQLException ("Lo sentimos, no hay conexion a la base de datos");
+        }
+    }
+    
+    public static ResultSet obtenerCarreras(Connection ConexionBD, int idFacultad) throws SQLException{
         
+        if(ConexionBD != null){
+            String consulta = "Select * from carrera where idCarrera = ?;";
+            PreparedStatement sentencia = ConexionBD.prepareStatement(consulta);
+            sentencia.setInt(1, idFacultad);
+            return sentencia.executeQuery();
+        }else{
+            throw new SQLException();
+        }
     }
 }

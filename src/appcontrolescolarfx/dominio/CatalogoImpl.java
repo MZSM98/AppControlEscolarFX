@@ -3,6 +3,8 @@ package appcontrolescolarfx.dominio;
 
 import appcontrolescolarfx.modelo.ConexionBD;
 import appcontrolescolarfx.modelo.dao.CatalogoDAO;
+import appcontrolescolarfx.modelo.pojo.Carrera;
+import appcontrolescolarfx.modelo.pojo.Facultad;
 import appcontrolescolarfx.modelo.pojo.Rol;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -36,6 +38,56 @@ public class CatalogoImpl {
             respuesta.put("mensaje", sqle.getMessage());
         }
         
+        return respuesta;
+    }
+    
+    public static HashMap<String, Object> obtenerFacultades(){
+        
+        HashMap<String, Object> respuesta = new LinkedHashMap<>();
+        
+        try {
+            ResultSet resultado = CatalogoDAO.obtenerFacultades(ConexionBD.abrirConexion());
+            List<Facultad> facultades = new ArrayList<>();
+            
+            while (resultado.next()){
+                Facultad facultad = new Facultad();
+                facultad.setIdFacultad(resultado.getInt("idFacultad"));
+                facultad.setFacultad(resultado.getString("facultad"));
+                facultades.add(facultad);
+            }
+            ConexionBD.cerrarConexionBD();
+            respuesta.put("error", false);
+            respuesta.put("facultades", facultades);
+            
+        }catch(SQLException sqle){
+            respuesta.put("error", true);
+            respuesta.put("mensaje", sqle.getMessage());
+        }
+        return respuesta;
+    }
+    
+    public static HashMap<String, Object> obtenerCarreras(int idFacultad){
+        
+        HashMap <String, Object> respuesta = new LinkedHashMap<>();
+        
+        try{
+            ResultSet resultado = CatalogoDAO.obtenerCarreras(ConexionBD.abrirConexion(), idFacultad);
+            List<Carrera> carreras = new ArrayList<>();
+            while (resultado.next()){
+                Carrera carrera = new Carrera();
+                
+                carrera.setIdFacultad(resultado.getInt("idFacultad"));
+                carrera.setIdCarrera(resultado.getInt("idCarrera"));
+                carrera.setCarrera(resultado.getString("carrera"));
+                carreras.add(carrera);
+            }
+            ConexionBD.cerrarConexionBD();
+            respuesta.put("error", false);
+            respuesta.put("carreras", carreras);
+        }catch (SQLException sqle){
+            respuesta.put("error", true);
+            respuesta.put("mensaje", sqle.getMessage());
+        }
         return respuesta;
     }
     

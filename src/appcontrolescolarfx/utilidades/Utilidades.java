@@ -1,5 +1,5 @@
 
-package utilidad;
+package appcontrolescolarfx.utilidades;
 
 import java.util.Optional;
 import javafx.fxml.FXMLLoader;
@@ -34,11 +34,7 @@ public class Utilidades {
         alerta.getButtonTypes().setAll(botonSi, botonNo);
         Optional<ButtonType> opcion = alerta.showAndWait();
         
-        if (opcion.isPresent() && opcion.get() == botonSi){
-            confirmacion = true;
-        }
-
-            return confirmacion;
+        return (opcion.isPresent() && opcion.get() == botonSi);
     }
     
     public static FXMLLoader obtenerVistaMemoria(String url){

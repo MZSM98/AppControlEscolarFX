@@ -26,7 +26,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import utilidad.Utilidades;
+import appcontrolescolarfx.utilidades.Utilidades;
 
 /**
  * FXML Controller class
@@ -108,13 +108,12 @@ public class FXMLAdminProfesorController implements Initializable, IObservador {
         
         if (profesorSeleccionado != null){
             boolean confirmacion;
-            confirmacion = Utilidades.mostrarAlertaConfirmacion("Confirmar Eliminacion", "Está a punto de eliminar el registro del profesor(a) "
-                    + profesorSeleccionado.getNombre() + " esta acción no se puede revertir", "¿está seguro de continuar?");
+            confirmacion = Utilidades.mostrarAlertaConfirmacion("Confirmar Eliminacion", "¿está seguro de continuar?", "Está a punto de eliminar el registro del profesor(a) "
+                    + profesorSeleccionado.getNombre() + profesorSeleccionado. getApellidoPaterno()+ ", esta acción no se puede revertir");
             
-            if(confirmacion){
-                ProfesorImpl.eliminarProfesor(profesorSeleccionado.getIdProfesor());
-                llenarTabla();
-            }
+            if(confirmacion)
+                eliminarRegistroProfesor(profesorSeleccionado.getIdProfesor());
+            
         }else{
             Utilidades.mostrarAlertaSimple("Seleccione un profesor", "Para eliminar a un profesor, primero debes seleccionarlo", Alert.AlertType.WARNING);
         }
@@ -149,5 +148,15 @@ public class FXMLAdminProfesorController implements Initializable, IObservador {
         llenarTabla();
     }
     
-    
+    private void eliminarRegistroProfesor (int idProfesorSeleccionado){
+        HashMap<String, Object> respuesta = ProfesorImpl.eliminarProfesor(idProfesorSeleccionado);
+        if(!(boolean) respuesta.get("error")){
+            Utilidades.mostrarAlertaSimple("Registro eliminado", "El Registro del profesor fue eliminado de manera exitosa" , Alert.AlertType.INFORMATION);
+            llenarTabla();
+        }else{
+            Utilidades.mostrarAlertaSimple("Error al eliminar", respuesta.get("error").toString(), Alert.AlertType.ERROR);
+        }
+        ProfesorImpl.eliminarProfesor(idProfesorSeleccionado);
+        llenarTabla();
+    }
 }

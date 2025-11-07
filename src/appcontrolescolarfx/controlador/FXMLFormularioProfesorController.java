@@ -21,7 +21,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import utilidad.Utilidades;
+import appcontrolescolarfx.utilidades.Utilidades;
 
 public class FXMLFormularioProfesorController implements Initializable {
 

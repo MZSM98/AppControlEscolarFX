@@ -1,8 +1,8 @@
 package appcontrolescolarfx.controlador;
 
 import appcontrolescolarfx.AppControlEscolarFX;
-import appcontrolescolarfx.interfaces.IObservador;
 import appcontrolescolarfx.modelo.pojo.Profesor;
+import appcontrolescolarfx.utilidades.Utilidades;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -12,7 +12,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
@@ -46,7 +45,6 @@ public class FXMLPrincipalController implements Initializable {
                 + " " +profesorSesion.getApellidoMaterno());
         labelNumTrabajador.setText(profesorSesion.getNoPersonal());
         labelRol.setText(profesorSesion.getRol());
-        
     }
 
     @FXML
@@ -69,6 +67,20 @@ public class FXMLPrincipalController implements Initializable {
 
     @FXML
     private void clicAdminAlumnos(ActionEvent event) {
+        
+        try {
+            FXMLLoader cargador = Utilidades.obtenerVistaMemoria("vista/FXMLAdminAlumno.fxml");
+            Parent parent = cargador.load();
+            Scene escena = new Scene(parent);
+            Stage escenario = new Stage();
+            escenario.setScene(escena);
+            escenario.setTitle("Administrador de alumnos");
+            escenario.initModality(Modality.APPLICATION_MODAL);
+            escenario.showAndWait();
+        }catch (IOException ioe){
+            ioe.printStackTrace();
+        }
+        
     }
 
     @FXML

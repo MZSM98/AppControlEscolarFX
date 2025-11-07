@@ -17,12 +17,12 @@ public class ProfesorDAO {
     public static int registrarProfesor(Profesor profesor, Connection conexionBD) throws SQLException{
         
         if(conexionBD != null){
-            String insert = "INSERT INTO profesor"
+            String insercion = "INSERT INTO profesor"
                     + " (nombre, apellidoPaterno, apellidoMaterno, noPersonal, password,"
                     + " fechaNacimiento, fechaContratacion, idRol) VALUES"
                     + " (?, ?, ?, ?, ?, ?, ?, ?);";
             
-            PreparedStatement sentencia = conexionBD.prepareStatement(insert);
+            PreparedStatement sentencia = conexionBD.prepareStatement(insercion);
             sentencia.setString(1, profesor.getNombre());
             sentencia.setString(2, profesor.getApellidoPaterno());
             sentencia.setString(3, profesor.getApellidoMaterno());
@@ -71,11 +71,11 @@ public class ProfesorDAO {
     public static int editarProfesor(Profesor profesor, Connection conexionBD) throws SQLException{
         
         if (conexionBD != null ){
-            String actualizar = "UPDATE profesor SET nombre = ?,"
+            String actualizacion = "UPDATE profesor SET nombre = ?,"
                     + " apellidoPaterno = ?,"
                     + " apellidoMaterno = ?, fechaNacimiento = ?,"
                     + " fechaContratacion = ?, idRol = ?, password = ? where noPersonal = ?;";
-            PreparedStatement sentencia = conexionBD.prepareStatement(actualizar);
+            PreparedStatement sentencia = conexionBD.prepareStatement(actualizacion);
             sentencia.setString(1, profesor.getNombre());
             sentencia.setString(2, profesor.getApellidoPaterno());
             sentencia.setString(3, profesor.getApellidoMaterno());
@@ -92,9 +92,9 @@ public class ProfesorDAO {
     public static int eliminarProfesor(int idProfesor, Connection conexionBD) throws SQLException{
         
         if(conexionBD != null){
-            String eliminar = "DELETE from profesor where idProfesor = ?;";
+            String eliminacion = "DELETE from profesor where idProfesor = ?;";
             
-            PreparedStatement sentencia = conexionBD.prepareStatement(eliminar);
+            PreparedStatement sentencia = conexionBD.prepareStatement(eliminacion);
             sentencia.setInt(1, idProfesor);
             return sentencia.executeUpdate();
         }

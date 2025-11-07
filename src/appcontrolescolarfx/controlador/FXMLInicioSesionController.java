@@ -18,7 +18,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import utilidad.Utilidades;
+import appcontrolescolarfx.utilidades.Utilidades;
 
 public class FXMLInicioSesionController implements Initializable {
     @FXML
@@ -93,7 +93,7 @@ public class FXMLInicioSesionController implements Initializable {
         try{
             
             FXMLLoader cargador = new FXMLLoader(AppControlEscolarFX.class.getResource
-        ("vista/FXMLPrincipal.fxml"));
+                ("vista/FXMLPrincipal.fxml"));
             Parent vista = cargador.load();
             FXMLPrincipalController controlador = cargador.getController();
             controlador.obtenerSesion(profesorSesion);

@@ -1,15 +1,23 @@
 package appcontrolescolarfx.controlador;
 
+import appcontrolescolarfx.dominio.AlumnoImpl; // Asumido que existe
 import appcontrolescolarfx.dominio.CatalogoImpl;
+import appcontrolescolarfx.interfaces.IObservador; // Añadido
+import appcontrolescolarfx.modelo.pojo.Alumno; // Añadido
 import appcontrolescolarfx.modelo.pojo.Carrera;
 import appcontrolescolarfx.modelo.pojo.Facultad;
 import appcontrolescolarfx.utilidades.Utilidades;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate; // Añadido
 import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -17,13 +25,12 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage; // Añadido
+import javax.imageio.ImageIO;
 
-/**
- * FXML Controller class
- *
- * @author User
- */
 public class FXMLFormularioAlumnoController implements Initializable {
 
     @FXML
@@ -46,41 +53,214 @@ public class FXMLFormularioAlumnoController implements Initializable {
     private DatePicker pickerNacimiento;
     
     ObservableList<Facultad> facultades;
+    ObservableList<Carrera> carreras; // Añadido
 
-    /**
-     * Initializes the controller class.
-     */
+    private IObservador observador; // Añadido
+    private Alumno alumnoEdicion; // Añadido
+    
+    private File fotoSeleccionada;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        cargarFacultades();
+        //cargarFacultades();
     }
 
     @FXML
     private void cargarFoto(ActionEvent event) {
+        abrirDialogo();
     }
 
     @FXML
     private void clicCancelar(ActionEvent event) {
+        cerrarVentana();
     }
 
     @FXML
     private void clicGuardar(ActionEvent event) {
+        /*if (sonCamposValidos()) {
+            if (alumnoEdicion == null) {
+                registrarAlumno();
+            } else {
+                editarAlumno();
+            }
+        }*/
     }
     
-    private void cargarFacultades(){
+    /*private void cargarFacultades(){
         HashMap<String, Object> respuesta = CatalogoImpl.obtenerFacultades();
         
         if (!(boolean)respuesta.get("error")){
-            List<Facultad> facultadesBD = (List<Facultad>)respuesta.get("carreras");
+            List<Facultad> facultadesBD = (List<Facultad>)respuesta.get("facultades");
             facultades = FXCollections.observableArrayList();
             facultades.addAll(facultadesBD);
             comboFacultad.setItems(facultades);
         }else{
             Utilidades.mostrarAlertaSimple("Error al cargar facultades", respuesta.get("mensaje").toString(), Alert.AlertType.ERROR);
         }
+    }*/
+    
+    /*private void cargarCarreras(int idFacultad) {
+        HashMap<String, Object> respuesta = CatalogoImpl.obtenerCarreras(idFacultad);
         
+        if (!(boolean)respuesta.get("error")){
+            List<Carrera> carrerasBD = (List<Carrera>)respuesta.get("carreras");
+            carreras = FXCollections.observableArrayList();
+            carreras.addAll(carrerasBD);
+            comboCarrera.setItems(carreras);
+        }else{
+            Utilidades.mostrarAlertaSimple("Error al cargar carreras", respuesta.get("mensaje").toString(), Alert.AlertType.ERROR);
+        }
+    }*/
+    
+    private boolean sonCamposValidos() {
+        boolean valido = true;
+        String mensajeError = "Se encontraron los siguientes errores: \n";
+        
+        if (textNombre.getText().isEmpty()) {
+            valido = false;
+            mensajeError += "- Nombre del alumno requerido.\n";
+        }
+        if (textApPaterno.getText().isEmpty()) {
+            valido = false;
+            mensajeError += "- Apellido Paterno obligatorio.\n";
+        }
+        if (pickerNacimiento.getValue() == null) {
+            valido = false;
+            mensajeError += "- Fecha de nacimiento requerida.\n";
+        }
+        if (comboCarrera.getSelectionModel().isEmpty()) {
+            valido = false;
+            mensajeError += "- Carrera requerida (asegúrese de seleccionar una facultad primero).\n";
+        }
+        
+        if (textMatricula.getText().isEmpty()) {
+            valido = false;
+            mensajeError += "- Matrícula requerida.\n";
+        }
+
+        if (!valido) {
+            Utilidades.mostrarAlertaSimple("Campos Vacíos o Inválidos", mensajeError, Alert.AlertType.WARNING);
+        }
+        return valido;
+    }
+    
+    private Alumno obtenerAlumno() {
+        Alumno alumno = new Alumno();
+        alumno.setMatricula(textMatricula.getText());
+        alumno.setNombre(textNombre.getText());
+        alumno.setApellidoPaterno(textApPaterno.getText());
+        alumno.setApellidoMaterno(textApMaterno.getText());
+        alumno.setCorreo(textCorreo.getText());
+        alumno.setFechaNacimiento(pickerNacimiento.getValue().toString());
+        
+        Carrera carreraSeleccionada = comboCarrera.getSelectionModel().getSelectedItem();
+        alumno.setIdCarrera(carreraSeleccionada.getIdCarrera());
+        alumno.setIdFacultad(carreraSeleccionada.getIdFacultad()); 
+        
+        alumno.setFoto(null); // Temporal
+        
+        return alumno;
+    }
+    
+    /*private void registrarAlumno() {
+        Alumno alumnoNuevo = obtenerAlumno();
+        
+        if (AlumnoImpl.verificarMatriculaDuplicada(alumnoNuevo.getMatricula())) {
+            Utilidades.mostrarAlertaSimple("Matrícula en uso", "La matrícula (" +
+                    alumnoNuevo.getMatricula() +
+                    ") ya se encuentra en uso, intente con una diferente", Alert.AlertType.WARNING);
+            return;
+        }
+
+        HashMap<String, Object> resultado = AlumnoImpl.registrarAlumno(alumnoNuevo);
+        if (!(boolean)resultado.get("error")) {
+            Utilidades.mostrarAlertaSimple("Alumno registrado correctamente", resultado.get("mensaje").toString(), Alert.AlertType.INFORMATION);
+            if(observador != null) {
+                observador.notificarOperacionExitosa("registrar", alumnoNuevo.getNombre());
+            }
+            cerrarVentana();
+        } else {
+            Utilidades.mostrarAlertaSimple("Error al registrar", resultado.get("error").toString(), Alert.AlertType.ERROR);
+        }
+    }*/
+    
+    /*private void editarAlumno() {
+        Alumno alumnoEdicion = obtenerAlumno();
+        alumnoEdicion.setIdAlumno(this.alumnoEdicion.getIdAlumno()); 
+
+        HashMap<String, Object> resultado = AlumnoImpl.editarAlumno(alumnoEdicion);
+        if (!(boolean)resultado.get("error")) {
+            Utilidades.mostrarAlertaSimple("Alumno editado correctamente", resultado.get("mensaje").toString(), Alert.AlertType.INFORMATION);
+            if(observador != null) {
+                observador.notificarOperacionExitosa("editar", alumnoEdicion.getNombre());
+            }
+            cerrarVentana();
+        } else {
+            Utilidades.mostrarAlertaSimple("Error al editar", resultado.get("error").toString(), Alert.AlertType.ERROR);
+        }
+    }*/
+
+    private void cerrarVentana() {
+        ((Stage) textMatricula.getScene().getWindow()).close();
+    }
+    
+    public void inicializarDatos(IObservador observador, Alumno alumno) {
+        this.observador = observador;
+        this.alumnoEdicion = alumno;
+
+        if (alumno != null) {
+            textMatricula.setText(alumno.getMatricula());
+            textNombre.setText(alumno.getNombre());
+            textApPaterno.setText(alumno.getApellidoPaterno());
+            textApMaterno.setText(alumno.getApellidoMaterno());
+            textCorreo.setText(alumno.getCorreo());
+            pickerNacimiento.setValue(LocalDate.parse(alumno.getFechaNacimiento()));
+
+            textMatricula.setEditable(false);
+            textMatricula.setDisable(true);
+
+            int posFacultad = obtenerFacultadSeleccionada(alumno.getIdFacultad());
+            comboFacultad.getSelectionModel().select(posFacultad);
+            
+            //int posCarrera = obtenerCarreraSeleccionada(alumno.getIdCarrera());
+            //comboCarrera.getSelectionModel().select(posCarrera);
+            
+        }
     }
 
-
+    private int obtenerFacultadSeleccionada(int idFacultad) {
+        for (int i = 0; i < facultades.size(); i++) {
+            if (facultades.get(i).getIdFacultad() == idFacultad) {
+                return i;
+            }
+        }
+        return -1; 
+    }
     
+    
+    private void abrirDialogo(){
+        
+        FileChooser dialogoSeleccion = new FileChooser();
+        dialogoSeleccion.setTitle("Seleccione un archivo");
+        FileChooser.ExtensionFilter filtroImg = new FileChooser.ExtensionFilter("Archivos JPG(.jpg, .png, .gif)", "*.png", "*.jpg", "*.gif");
+        dialogoSeleccion.getExtensionFilters().add(filtroImg);
+        fotoSeleccionada = dialogoSeleccion.showOpenDialog(textCorreo.getScene().getWindow());
+        
+        if (fotoSeleccionada != null){
+            mostrarFoto(fotoSeleccionada);
+        }
+        
+    }
+    
+    private void mostrarFoto(File foto){
+        
+        try{
+            BufferedImage bufferImg = ImageIO.read(foto);
+            Image imagen = SwingFXUtils.toFXImage(bufferImg, null);
+            imagenPerfil.setImage(imagen);
+        }catch(IOException ioe){
+            Utilidades.mostrarAlertaSimple("Error en archivo", "Lo sentimos, la imagen seleccionada no puede cargarse, "
+                    + "por favor intente con otro archivo", Alert.AlertType.ERROR);
+        }
+    }
 }

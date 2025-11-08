@@ -44,17 +44,13 @@ public class FXMLAdminAlumnoController implements Initializable {
     @FXML
     private TableColumn columnFechaNacimiento;
 
-    /**
-     * Initializes the controller class.
-     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
     }    
 
     @FXML
     private void clicRegistrar(ActionEvent event) {
-        
+        abrirFormulario();
     }
 
     @FXML
@@ -77,7 +73,7 @@ public class FXMLAdminAlumnoController implements Initializable {
     private void abrirFormulario(){
         
         try{
-            FXMLLoader cargador = Utilidades.obtenerVistaMemoria("FXMLFormularioAlumno.fxml");
+            FXMLLoader cargador = Utilidades.obtenerVistaMemoria("vista/FXMLFormularioAlumno.fxml");
             Parent parent = cargador.load();
             Scene scene = new Scene(parent);
             Stage escenario = new Stage();

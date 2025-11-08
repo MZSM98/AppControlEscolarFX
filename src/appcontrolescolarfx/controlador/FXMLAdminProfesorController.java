@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -18,8 +17,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -27,6 +24,10 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import appcontrolescolarfx.utilidades.Utilidades;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 
 /**
  * FXML Controller class
@@ -58,6 +59,7 @@ public class FXMLAdminProfesorController implements Initializable, IObservador {
     public void initialize(URL url, ResourceBundle rb) {
         configurarTabla();
         llenarTabla();
+        configurarBusqueda();
         
     }    
     
@@ -119,9 +121,7 @@ public class FXMLAdminProfesorController implements Initializable, IObservador {
         }
     }
 
-    @FXML
-    private void buscarPorNombre(ActionEvent event) {
-    }
+    
 
     private void irFormulario(Profesor profesor){
         try{
@@ -145,18 +145,57 @@ public class FXMLAdminProfesorController implements Initializable, IObservador {
 
     @Override
     public void notificarOperacionExitosa(String tipoOperacion, String nombre) {
+        
         llenarTabla();
+        textBuscar.setText("");
+        configurarBusqueda();
     }
     
     private void eliminarRegistroProfesor (int idProfesorSeleccionado){
         HashMap<String, Object> respuesta = ProfesorImpl.eliminarProfesor(idProfesorSeleccionado);
         if(!(boolean) respuesta.get("error")){
+            textBuscar.setText("");
             Utilidades.mostrarAlertaSimple("Registro eliminado", "El Registro del profesor fue eliminado de manera exitosa" , Alert.AlertType.INFORMATION);
             llenarTabla();
+            configurarBusqueda();
         }else{
             Utilidades.mostrarAlertaSimple("Error al eliminar", respuesta.get("error").toString(), Alert.AlertType.ERROR);
         }
         ProfesorImpl.eliminarProfesor(idProfesorSeleccionado);
         llenarTabla();
+    }
+    
+    private void configurarBusqueda(){
+        
+        if(profesores!= null && profesores.size()> 0){
+            FilteredList<Profesor> filtradoProfesores = 
+                    new FilteredList<>(profesores, p ->true);
+            textBuscar.textProperty().addListener(new ChangeListener<String>(){
+                
+                @Override
+                public void changed(ObservableValue<? extends String> observable,
+                        String oldValue, String newValue) {
+                    
+                    filtradoProfesores.setPredicate(profesor -> {
+                        //CASO DEFAULT VACIO (DEVOLVER TODOS)
+                        if(newValue == null || newValue.isEmpty()){
+                            return true;
+                        }
+                        String lowerNewValue = newValue.toLowerCase();
+                        if(profesor.getNombre().toLowerCase().contains(lowerNewValue)){
+                            return true;
+                        }
+                        if(profesor.getNoPersonal().toLowerCase().contains(lowerNewValue)){
+                            return true;
+                        }
+                        
+                        return false;
+                    });
+                }
+            });
+            SortedList<Profesor> sortedProfesor = new SortedList<>(filtradoProfesores);
+            sortedProfesor .comparatorProperty().bind(tablaProfesores.comparatorProperty());
+            tablaProfesores.setItems(sortedProfesor);
+        }
     }
 }

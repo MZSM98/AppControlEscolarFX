@@ -75,8 +75,6 @@ public class CatalogoImpl {
             List<Carrera> carreras = new ArrayList<>();
             while (resultado.next()){
                 Carrera carrera = new Carrera();
-                
-                carrera.setIdFacultad(resultado.getInt("idFacultad"));
                 carrera.setIdCarrera(resultado.getInt("idCarrera"));
                 carrera.setCarrera(resultado.getString("carrera"));
                 carreras.add(carrera);

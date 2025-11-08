@@ -185,7 +185,10 @@ public class FXMLAdminProfesorController implements Initializable, IObservador {
                         if(profesor.getNombre().toLowerCase().contains(lowerNewValue)){
                             return true;
                         }
-                        if(profesor.getNoPersonal().toLowerCase().contains(lowerNewValue)){
+                        if(profesor.getApellidoPaterno().toLowerCase().contains(lowerNewValue)){
+                            return true;
+                        }
+                        if(profesor.getApellidoMaterno().toLowerCase().contains(lowerNewValue)){
                             return true;
                         }
                         
@@ -194,7 +197,7 @@ public class FXMLAdminProfesorController implements Initializable, IObservador {
                 }
             });
             SortedList<Profesor> sortedProfesor = new SortedList<>(filtradoProfesores);
-            sortedProfesor .comparatorProperty().bind(tablaProfesores.comparatorProperty());
+            sortedProfesor.comparatorProperty().bind(tablaProfesores.comparatorProperty());
             tablaProfesores.setItems(sortedProfesor);
         }
     }

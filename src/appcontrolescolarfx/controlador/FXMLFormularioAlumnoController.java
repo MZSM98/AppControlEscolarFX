@@ -1,9 +1,8 @@
 package appcontrolescolarfx.controlador;
 
-import appcontrolescolarfx.dominio.AlumnoImpl; // Asumido que existe
 import appcontrolescolarfx.dominio.CatalogoImpl;
-import appcontrolescolarfx.interfaces.IObservador; // Añadido
-import appcontrolescolarfx.modelo.pojo.Alumno; // Añadido
+import appcontrolescolarfx.interfaces.IObservador;
+import appcontrolescolarfx.modelo.pojo.Alumno; 
 import appcontrolescolarfx.modelo.pojo.Carrera;
 import appcontrolescolarfx.modelo.pojo.Facultad;
 import appcontrolescolarfx.utilidades.Utilidades;
@@ -53,16 +52,16 @@ public class FXMLFormularioAlumnoController implements Initializable {
     private DatePicker pickerNacimiento;
     
     ObservableList<Facultad> facultades;
-    ObservableList<Carrera> carreras; // Añadido
+    ObservableList<Carrera> carreras; 
 
-    private IObservador observador; // Añadido
-    private Alumno alumnoEdicion; // Añadido
+    private IObservador observador; 
+    private Alumno alumnoEdicion; 
     
     private File fotoSeleccionada;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        //cargarFacultades();
+        cargarFacultades();
     }
 
     @FXML
@@ -77,40 +76,9 @@ public class FXMLFormularioAlumnoController implements Initializable {
 
     @FXML
     private void clicGuardar(ActionEvent event) {
-        /*if (sonCamposValidos()) {
-            if (alumnoEdicion == null) {
-                registrarAlumno();
-            } else {
-                editarAlumno();
-            }
-        }*/
     }
     
-    /*private void cargarFacultades(){
-        HashMap<String, Object> respuesta = CatalogoImpl.obtenerFacultades();
-        
-        if (!(boolean)respuesta.get("error")){
-            List<Facultad> facultadesBD = (List<Facultad>)respuesta.get("facultades");
-            facultades = FXCollections.observableArrayList();
-            facultades.addAll(facultadesBD);
-            comboFacultad.setItems(facultades);
-        }else{
-            Utilidades.mostrarAlertaSimple("Error al cargar facultades", respuesta.get("mensaje").toString(), Alert.AlertType.ERROR);
-        }
-    }*/
     
-    /*private void cargarCarreras(int idFacultad) {
-        HashMap<String, Object> respuesta = CatalogoImpl.obtenerCarreras(idFacultad);
-        
-        if (!(boolean)respuesta.get("error")){
-            List<Carrera> carrerasBD = (List<Carrera>)respuesta.get("carreras");
-            carreras = FXCollections.observableArrayList();
-            carreras.addAll(carrerasBD);
-            comboCarrera.setItems(carreras);
-        }else{
-            Utilidades.mostrarAlertaSimple("Error al cargar carreras", respuesta.get("mensaje").toString(), Alert.AlertType.ERROR);
-        }
-    }*/
     
     private boolean sonCamposValidos() {
         boolean valido = true;
@@ -162,43 +130,7 @@ public class FXMLFormularioAlumnoController implements Initializable {
         return alumno;
     }
     
-    /*private void registrarAlumno() {
-        Alumno alumnoNuevo = obtenerAlumno();
-        
-        if (AlumnoImpl.verificarMatriculaDuplicada(alumnoNuevo.getMatricula())) {
-            Utilidades.mostrarAlertaSimple("Matrícula en uso", "La matrícula (" +
-                    alumnoNuevo.getMatricula() +
-                    ") ya se encuentra en uso, intente con una diferente", Alert.AlertType.WARNING);
-            return;
-        }
-
-        HashMap<String, Object> resultado = AlumnoImpl.registrarAlumno(alumnoNuevo);
-        if (!(boolean)resultado.get("error")) {
-            Utilidades.mostrarAlertaSimple("Alumno registrado correctamente", resultado.get("mensaje").toString(), Alert.AlertType.INFORMATION);
-            if(observador != null) {
-                observador.notificarOperacionExitosa("registrar", alumnoNuevo.getNombre());
-            }
-            cerrarVentana();
-        } else {
-            Utilidades.mostrarAlertaSimple("Error al registrar", resultado.get("error").toString(), Alert.AlertType.ERROR);
-        }
-    }*/
     
-    /*private void editarAlumno() {
-        Alumno alumnoEdicion = obtenerAlumno();
-        alumnoEdicion.setIdAlumno(this.alumnoEdicion.getIdAlumno()); 
-
-        HashMap<String, Object> resultado = AlumnoImpl.editarAlumno(alumnoEdicion);
-        if (!(boolean)resultado.get("error")) {
-            Utilidades.mostrarAlertaSimple("Alumno editado correctamente", resultado.get("mensaje").toString(), Alert.AlertType.INFORMATION);
-            if(observador != null) {
-                observador.notificarOperacionExitosa("editar", alumnoEdicion.getNombre());
-            }
-            cerrarVentana();
-        } else {
-            Utilidades.mostrarAlertaSimple("Error al editar", resultado.get("error").toString(), Alert.AlertType.ERROR);
-        }
-    }*/
 
     private void cerrarVentana() {
         ((Stage) textMatricula.getScene().getWindow()).close();
@@ -261,6 +193,34 @@ public class FXMLFormularioAlumnoController implements Initializable {
         }catch(IOException ioe){
             Utilidades.mostrarAlertaSimple("Error en archivo", "Lo sentimos, la imagen seleccionada no puede cargarse, "
                     + "por favor intente con otro archivo", Alert.AlertType.ERROR);
+        }
+    }
+    
+    private void cargarFacultades(){
+        HashMap<String, Object> respuesta = CatalogoImpl.obtenerFacultades();
+        
+        if(!(boolean)respuesta.get("error")){
+            List<Facultad> facultadesBD = (List<Facultad>)respuesta.get("facultades");
+            facultades = FXCollections.observableArrayList();
+            facultades.addAll(facultadesBD);
+            comboFacultad.setItems(facultades);
+        }else{
+            Utilidades.mostrarAlertaSimple("Error al cargar Facultades", (String)respuesta.get("mensaje"), Alert.AlertType.ERROR);
+        }
+    }
+
+    @FXML
+    private void cargarCarreras(ActionEvent event) {
+        int idFacultad = comboFacultad.getValue().getIdFacultad();
+        HashMap <String, Object> respuesta = CatalogoImpl.obtenerCarreras(idFacultad);
+        
+        if(!(boolean)respuesta.get("error")){
+            List<Carrera> carrerasBD = (List<Carrera>)respuesta.get("carreras");
+            carreras = FXCollections.observableArrayList();
+            carreras.addAll(carrerasBD);
+            comboCarrera.setItems(carreras);
+        }else{
+            Utilidades.mostrarAlertaSimple("Error al cargar las Carreras", (String)respuesta.get("mensaje"), Alert.AlertType.ERROR);
         }
     }
 }

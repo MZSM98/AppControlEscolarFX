@@ -39,4 +39,9 @@ public class Carrera {
     public void setFacultad(String facultad) {
         this.facultad = facultad;
     }
+    
+    @Override
+    public String toString(){
+        return carrera;
+    }
 }

@@ -23,4 +23,8 @@ public class Facultad {
         this.facultad = facultad;
     }
     
+    @Override
+    public String toString(){
+        return facultad;
+    }
 }

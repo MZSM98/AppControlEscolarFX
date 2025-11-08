@@ -27,7 +27,7 @@ public class CatalogoDAO {
     public static ResultSet obtenerFacultades (Connection ConexionBD) throws SQLException{
         
         if(ConexionBD != null){
-            String consulta = "Select * from facultad";
+            String consulta = "SELECT * from facultad";
             PreparedStatement sentencia = ConexionBD.prepareStatement(consulta);
             return sentencia.executeQuery();
         }else{
@@ -38,7 +38,7 @@ public class CatalogoDAO {
     public static ResultSet obtenerCarreras(Connection ConexionBD, int idFacultad) throws SQLException{
         
         if(ConexionBD != null){
-            String consulta = "Select * from carrera where idCarrera = ?;";
+            String consulta = "SELECT * from carrera where idFacultad = ?;";
             PreparedStatement sentencia = ConexionBD.prepareStatement(consulta);
             sentencia.setInt(1, idFacultad);
             return sentencia.executeQuery();

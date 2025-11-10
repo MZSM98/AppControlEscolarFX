@@ -83,8 +83,8 @@
                </GridPane.margin></TextField>
             <Label text="Correo Electrónico:" GridPane.columnIndex="1" GridPane.rowIndex="2" />
             <Label text="Fecha Nacimiento" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-            <ComboBox fx:id="comboFacultad" prefHeight="26.0" prefWidth="202.0" GridPane.rowIndex="5" />
-            <ComboBox fx:id="comboCarrera" onAction="#cargarCarreras" prefHeight="26.0" prefWidth="191.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <ComboBox fx:id="comboFacultad" onAction="#cargarCarreras" prefHeight="26.0" prefWidth="202.0" GridPane.rowIndex="5" />
+            <ComboBox fx:id="comboCarrera" prefHeight="26.0" prefWidth="191.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
             <Label text="Facultad" GridPane.rowIndex="4" />
             <Label text="Carrera" GridPane.columnIndex="1" GridPane.rowIndex="4" />
             <DatePicker fx:id="pickerNacimiento" prefHeight="26.0" prefWidth="185.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />

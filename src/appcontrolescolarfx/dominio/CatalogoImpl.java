@@ -30,7 +30,7 @@ public class CatalogoImpl {
                 rol.setRol(resultado.getString("rol"));
                 roles.add(rol);
             }
-            ConexionBD.cerrarConexionBD();
+            ConexionBD.cerrarConexion();
             respuesta.put("error", false);
             respuesta.put("roles", roles);
         }catch(SQLException sqle){
@@ -55,7 +55,7 @@ public class CatalogoImpl {
                 facultad.setFacultad(resultado.getString("facultad"));
                 facultades.add(facultad);
             }
-            ConexionBD.cerrarConexionBD();
+            ConexionBD.cerrarConexion();
             respuesta.put("error", false);
             respuesta.put("facultades", facultades);
             
@@ -79,7 +79,7 @@ public class CatalogoImpl {
                 carrera.setCarrera(resultado.getString("carrera"));
                 carreras.add(carrera);
             }
-            ConexionBD.cerrarConexionBD();
+            ConexionBD.cerrarConexion();
             respuesta.put("error", false);
             respuesta.put("carreras", carreras);
         }catch (SQLException sqle){

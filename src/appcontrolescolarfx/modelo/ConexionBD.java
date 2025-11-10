@@ -33,7 +33,7 @@ public class ConexionBD {
         
     }
     
-    public static void cerrarConexionBD(){
+    public static void cerrarConexion(){
         try{
             if(CONEXION!=null){
                 CONEXION.close();

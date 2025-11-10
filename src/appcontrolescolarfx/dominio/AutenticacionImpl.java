@@ -33,7 +33,7 @@ public class AutenticacionImpl {
                 respuesta.put("Error", true);
                 respuesta.put("mensaje", "Las credenciales proporcionadas son incorrectas, por favor verifica la información");
             }
-            ConexionBD.cerrarConexionBD();
+            ConexionBD.cerrarConexion();
         } catch (SQLException sqle){
             respuesta.put("Error", true);
             respuesta.put("mensaje", sqle.getMessage());

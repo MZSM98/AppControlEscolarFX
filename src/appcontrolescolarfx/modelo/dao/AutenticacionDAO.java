@@ -1,12 +1,14 @@
 package appcontrolescolarfx.modelo.dao;
-import appcontrolescolarfx.modelo.ConexionBD;
-import appcontrolescolarfx.modelo.pojo.Profesor;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class AutenticacionDAO {
+    
+    private AutenticacionDAO(){
+        throw new UnsupportedOperationException("Esta clase no debe ser instanciada...");
+    }
     
     public static ResultSet autenticarUsuario(String noPersonal,
             String password, Connection conexionBD) throws SQLException{

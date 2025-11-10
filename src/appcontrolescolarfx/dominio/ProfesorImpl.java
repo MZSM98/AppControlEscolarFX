@@ -42,7 +42,7 @@ public class ProfesorImpl {
             }
             respuesta.put("error", false);
             respuesta.put("profesores", profesores);
-            ConexionBD.cerrarConexionBD();
+            ConexionBD.cerrarConexion();
         }catch(SQLException sqle){
             respuesta.put("error", true);
             respuesta.put("mensaje", sqle.getMessage());
@@ -83,7 +83,7 @@ public class ProfesorImpl {
             sqle.printStackTrace();//Tengo que cambiar esto
             return false;
         }finally{
-            ConexionBD.cerrarConexionBD();
+            ConexionBD.cerrarConexion();
         }
     }
     
@@ -100,7 +100,7 @@ public class ProfesorImpl {
                 respuesta.put("error", true);
                 respuesta.put("mensaje", "No se pudo modificar la información, inténtelo más tarde");
             }
-            ConexionBD.cerrarConexionBD();
+            ConexionBD.cerrarConexion();
         }catch (SQLException sqle){
             respuesta.put("error", true);
             respuesta.put("mensaje", sqle.getMessage());
@@ -122,7 +122,7 @@ public class ProfesorImpl {
                 respuesta.put("error", true);
                 respuesta.put("mensaje", "No se pudo eliminar el registro, inténtelo más tarde");
             }
-            ConexionBD.cerrarConexionBD();
+            ConexionBD.cerrarConexion();
         }catch(SQLException sqle){
             respuesta.put("error", true);
             respuesta.put("mensaje", sqle.getMessage());

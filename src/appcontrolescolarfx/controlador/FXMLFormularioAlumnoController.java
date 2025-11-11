@@ -10,7 +10,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.time.LocalDate; // Añadido
 import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -76,6 +75,14 @@ public class FXMLFormularioAlumnoController implements Initializable {
 
     @FXML
     private void clicGuardar(ActionEvent event) {
+        if (sonCamposValidos()){
+            if(alumnoEdicion == null){
+                registrarAlumno();
+            }else{
+                editarAlumno();
+            }
+           
+        }
     }
     
     
@@ -125,7 +132,7 @@ public class FXMLFormularioAlumnoController implements Initializable {
         alumno.setIdCarrera(carreraSeleccionada.getIdCarrera());
         alumno.setIdFacultad(carreraSeleccionada.getIdFacultad()); 
         
-        alumno.setFoto(null); // Temporal
+        alumno.setFoto(null);
         
         return alumno;
     }
@@ -136,7 +143,7 @@ public class FXMLFormularioAlumnoController implements Initializable {
         ((Stage) textMatricula.getScene().getWindow()).close();
     }
     
-    public void inicializarDatos(IObservador observador, Alumno alumno) {
+    /*public void inicializarDatos(IObservador observador, Alumno alumno) {
         this.observador = observador;
         this.alumnoEdicion = alumno;
 
@@ -154,11 +161,8 @@ public class FXMLFormularioAlumnoController implements Initializable {
             int posFacultad = obtenerFacultadSeleccionada(alumno.getIdFacultad());
             comboFacultad.getSelectionModel().select(posFacultad);
             
-            //int posCarrera = obtenerCarreraSeleccionada(alumno.getIdCarrera());
-            //comboCarrera.getSelectionModel().select(posCarrera);
-            
         }
-    }
+    }*/
 
     private int obtenerFacultadSeleccionada(int idFacultad) {
         for (int i = 0; i < facultades.size(); i++) {
@@ -222,5 +226,13 @@ public class FXMLFormularioAlumnoController implements Initializable {
         }else{
             Utilidades.mostrarAlertaSimple("Error al cargar las Carreras", (String)respuesta.get("mensaje"), Alert.AlertType.ERROR);
         }
+    }
+    
+    private void registrarAlumno(){
+        
+    }
+    
+    private void editarAlumno(){
+        
     }
 }

@@ -54,5 +54,51 @@ public class AlumnoImpl {
         }
         return respuesta;
     }
-
+    
+    public static HashMap<String, Object> obtenerAlumnos(){
+        HashMap<String, Object> respuesta = new LinkedHashMap<>();
+        
+        try{
+            ResultSet resultado = AlumnoDAO.obtenerAlumnos(ConexionBD.abrirConexion());
+            ArrayList<Alumno> alumnos = new ArrayList<>();
+            while(resultado.next()){
+                Alumno alumno = new Alumno();
+                alumno.setIdAlumno(resultado.getInt("idAlumno"));
+                alumno.setNombre(resultado.getString("nombre"));
+                alumno.setApellidoPaterno(resultado.getString("apellidoPaterno"));
+                alumno.setApellidoMaterno(resultado.getString("apellidoMaterno"));
+                alumno.setCorreo(resultado.getString("correo"));
+                alumno.setMatricula(resultado.getString("matricula"));
+                alumno.setIdCarrera(resultado.getInt("idCarrera"));
+                alumno.setFechaNacimiento(resultado.getString("fechaNacimiento"));
+                alumnos.add(alumno);
+            }
+            respuesta.put("error", false);
+            respuesta.put("alumnos", alumnos);
+            ConexionBD.cerrarConexion();
+        }catch(SQLException sqle){
+            respuesta.put("error", true);
+            respuesta.put("mensaje", sqle.getMessage());
+        }
+        return respuesta;
+    }
+    
+    public static HashMap<String, Object> verificarDuplicado(String matricula){
+        HashMap<String, Object> respuesta = new LinkedHashMap<>();
+        
+        try{
+            boolean esDuplicado = AlumnoDAO.verificarDuplicado(ConexionBD.abrirConexion(), matricula);
+            if(esDuplicado){
+                respuesta.put("duplicado", true);
+            }else{
+                respuesta.put("duplicado", false);
+                respuesta.put("error", true);
+            }
+        }catch(SQLException sqle){
+            respuesta.put("error", true);
+            respuesta.put("mensaje", sqle.getMessage());
+        }
+        return respuesta;
+    }
+    
 }

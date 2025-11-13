@@ -2,14 +2,14 @@ package appcontrolescolarfx.dominio;
 
 import appcontrolescolarfx.modelo.ConexionBD;
 import appcontrolescolarfx.modelo.dao.AlumnoDAO;
+import appcontrolescolarfx.modelo.dao.ProfesorDAO;
 import appcontrolescolarfx.modelo.pojo.Alumno;
-import java.sql.Connection;
+import appcontrolescolarfx.modelo.pojo.Respuesta;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 
 public class AlumnoImpl {
 
@@ -69,7 +69,8 @@ public class AlumnoImpl {
                 alumno.setApellidoMaterno(resultado.getString("apellidoMaterno"));
                 alumno.setCorreo(resultado.getString("correo"));
                 alumno.setMatricula(resultado.getString("matricula"));
-                alumno.setIdCarrera(resultado.getInt("idCarrera"));
+                alumno.setCarrera(resultado.getString("c.carrera"));
+                alumno.setFacultad(resultado.getString("f.facultad"));
                 alumno.setFechaNacimiento(resultado.getString("fechaNacimiento"));
                 alumnos.add(alumno);
             }
@@ -83,20 +84,53 @@ public class AlumnoImpl {
         return respuesta;
     }
     
-    public static HashMap<String, Object> verificarDuplicado(String matricula){
+    public static HashMap<String, Object> obtenerFoto (int idAlumno){
         HashMap<String, Object> respuesta = new LinkedHashMap<>();
-        
+                
         try{
-            boolean esDuplicado = AlumnoDAO.verificarDuplicado(ConexionBD.abrirConexion(), matricula);
-            if(esDuplicado){
-                respuesta.put("duplicado", true);
+            ResultSet resultado = AlumnoDAO.obtenerFoto(ConexionBD.abrirConexion(), idAlumno);
+            if(resultado.next()){
+                byte[] foto;
+                foto = resultado.getBytes("foto");
+                respuesta.put("error", false);
+                respuesta.put("foto", foto);
             }else{
-                respuesta.put("duplicado", false);
                 respuesta.put("error", true);
+                respuesta.put("mensaje", "No se pudo cargar la fotografía");
             }
         }catch(SQLException sqle){
             respuesta.put("error", true);
             respuesta.put("mensaje", sqle.getMessage());
+        }
+        return respuesta;
+    }
+    
+    public static boolean verificarDuplicado(String matricula){
+        try {
+            return AlumnoDAO.verificarDuplicado(ConexionBD.abrirConexion(), matricula);
+        }catch (SQLException sqle){
+            sqle.printStackTrace();
+            return false;
+        }finally{
+            ConexionBD.cerrarConexion();
+        }
+    }
+    
+    public static Respuesta registrar(Alumno alumno){
+        
+        Respuesta respuesta = new Respuesta();
+        respuesta.setError(true);
+        
+        try{
+            int filasAfectadas = AlumnoDAO.registrarAlumno(alumno, ConexionBD.abrirConexion());
+            if(filasAfectadas >0){
+                respuesta.setError(false);
+                respuesta.setMensaje("Información del alumno guardada de manera exitosa");
+            }else{
+                respuesta.setMensaje("Lo sentimos :(, no pudimos guardar la información");
+            }
+        }catch(SQLException sqle){
+            respuesta.setMensaje(sqle.getMessage());
         }
         return respuesta;
     }

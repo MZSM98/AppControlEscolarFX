@@ -1,15 +1,19 @@
 package appcontrolescolarfx.controlador;
 
+import appcontrolescolarfx.dominio.AlumnoImpl;
 import appcontrolescolarfx.dominio.CatalogoImpl;
 import appcontrolescolarfx.interfaces.IObservador;
 import appcontrolescolarfx.modelo.pojo.Alumno; 
 import appcontrolescolarfx.modelo.pojo.Carrera;
 import appcontrolescolarfx.modelo.pojo.Facultad;
+import appcontrolescolarfx.modelo.pojo.Respuesta;
 import appcontrolescolarfx.utilidades.Utilidades;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -26,7 +30,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
-import javafx.stage.Stage; // Añadido
+import javafx.stage.Stage; 
 import javax.imageio.ImageIO;
 
 public class FXMLFormularioAlumnoController implements Initializable {
@@ -91,6 +95,10 @@ public class FXMLFormularioAlumnoController implements Initializable {
         boolean valido = true;
         String mensajeError = "Se encontraron los siguientes errores: \n";
         
+        if(fotoSeleccionada == null){
+            valido = false;
+            mensajeError+= "- Fotografía del alumno requerida\n";
+        }
         if (textNombre.getText().isEmpty()) {
             valido = false;
             mensajeError += "- Nombre del alumno requerido.\n";
@@ -102,6 +110,11 @@ public class FXMLFormularioAlumnoController implements Initializable {
         if (pickerNacimiento.getValue() == null) {
             valido = false;
             mensajeError += "- Fecha de nacimiento requerida.\n";
+        }
+        
+        if (textCorreo.getText().isEmpty()){
+            valido = false;
+            mensajeError += "- El correo es requerido.\n";
         }
         if (comboCarrera.getSelectionModel().isEmpty()) {
             valido = false;
@@ -119,7 +132,7 @@ public class FXMLFormularioAlumnoController implements Initializable {
         return valido;
     }
     
-    private Alumno obtenerAlumno() {
+    private Alumno obtenerAlumno() throws IOException{
         Alumno alumno = new Alumno();
         alumno.setMatricula(textMatricula.getText());
         alumno.setNombre(textNombre.getText());
@@ -130,23 +143,20 @@ public class FXMLFormularioAlumnoController implements Initializable {
         
         Carrera carreraSeleccionada = comboCarrera.getSelectionModel().getSelectedItem();
         alumno.setIdCarrera(carreraSeleccionada.getIdCarrera());
-        alumno.setIdFacultad(carreraSeleccionada.getIdFacultad()); 
         
-        alumno.setFoto(null);
-        
+        byte[] fotoBytes = Files.readAllBytes(fotoSeleccionada.toPath());
+        alumno.setFoto(fotoBytes);
+            
         return alumno;
     }
     
-    
-
     private void cerrarVentana() {
         ((Stage) textMatricula.getScene().getWindow()).close();
     }
     
-    /*public void inicializarDatos(IObservador observador, Alumno alumno) {
+    public void inicializarDatos(IObservador observador, Alumno alumno) {
         this.observador = observador;
         this.alumnoEdicion = alumno;
-
         if (alumno != null) {
             textMatricula.setText(alumno.getMatricula());
             textNombre.setText(alumno.getNombre());
@@ -161,8 +171,9 @@ public class FXMLFormularioAlumnoController implements Initializable {
             int posFacultad = obtenerFacultadSeleccionada(alumno.getIdFacultad());
             comboFacultad.getSelectionModel().select(posFacultad);
             
+            
         }
-    }*/
+    }
 
     private int obtenerFacultadSeleccionada(int idFacultad) {
         for (int i = 0; i < facultades.size(); i++) {
@@ -230,9 +241,30 @@ public class FXMLFormularioAlumnoController implements Initializable {
     
     private void registrarAlumno(){
         
+        
+        try{
+            Alumno alumno = obtenerAlumno();
+            if (AlumnoImpl.verificarDuplicado(alumno.getMatricula())){
+                Utilidades.mostrarAlertaSimple("Matrícula en uso", "La matrícula (" +
+                        alumno.getMatricula() +
+                        ") ya se encuentra en uso, intente con uno diferente", Alert.AlertType.WARNING);
+                return;
+            }
+            Respuesta respuesta = AlumnoImpl.registrar(alumno);
+            if(!respuesta.isError()){
+                Utilidades.mostrarAlertaSimple("Registro exitoso", respuesta.getMensaje(), Alert.AlertType.INFORMATION);
+                observador.notificarOperacionExitosa("registrar", alumno.getNombre());
+                cerrarVentana();
+            }else{
+                Utilidades.mostrarAlertaSimple("Error al registrar", respuesta.getMensaje(), Alert.AlertType.ERROR);
+            }
+        }catch(IOException ioe){
+            Utilidades.mostrarAlertaSimple("Error con la foto", ioe.getMessage(), Alert.AlertType.ERROR);
+        }
     }
     
     private void editarAlumno(){
-        
+        return;
     }
+    
 }

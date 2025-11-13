@@ -60,7 +60,6 @@ public class FXMLAdminProfesorController implements Initializable, IObservador {
         configurarTabla();
         llenarTabla();
         configurarBusqueda();
-        
     }    
     
     private void configurarTabla(){

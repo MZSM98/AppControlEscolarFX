@@ -1,6 +1,7 @@
 package appcontrolescolarfx.controlador;
 
 import appcontrolescolarfx.dominio.AlumnoImpl;
+import appcontrolescolarfx.interfaces.IObservador;
 import appcontrolescolarfx.modelo.pojo.Alumno;
 import appcontrolescolarfx.modelo.pojo.Profesor;
 import appcontrolescolarfx.utilidades.Utilidades;
@@ -35,7 +36,7 @@ import javafx.stage.Stage;
  *
  * @author User
  */
-public class FXMLAdminAlumnoController implements Initializable {
+public class FXMLAdminAlumnoController implements Initializable, IObservador {
 
     @FXML
     private TextField textBuscar;
@@ -67,31 +68,39 @@ public class FXMLAdminAlumnoController implements Initializable {
 
     @FXML
     private void clicRegistrar(ActionEvent event) {
-        abrirFormulario();
+        abrirFormulario(null);
     }
 
     @FXML
     private void clicModificar(ActionEvent event) {
+        Alumno alumnoSeleccionado = tablaAlumnos.getSelectionModel().getSelectedItem();
+        
+        if(alumnoSeleccionado != null){
+            abrirFormulario(alumnoSeleccionado);
+        }else{
+            Utilidades.mostrarAlertaSimple("ADVERTENCIA", "Para editar a un alumno primero debe seleccionarlo", Alert.AlertType.WARNING);
+        }
+        
     }
 
     @FXML
     private void clicEliminar(ActionEvent event) {
     }
 
-    @FXML
-    private void buscarPorNombre(ActionEvent event) {
-    }
 
     @FXML
     private void clicExportar(ActionEvent event) {
         
     }
     
-    private void abrirFormulario(){
+    private void abrirFormulario(Alumno alumno){
         
         try{
             FXMLLoader cargador = Utilidades.obtenerVistaMemoria("vista/FXMLFormularioAlumno.fxml");
             Parent parent = cargador.load();
+            
+            FXMLFormularioAlumnoController controlador = cargador.getController();
+            controlador.inicializarDatos(this, alumno);
             Scene scene = new Scene(parent);
             Stage escenario = new Stage();
             escenario.setScene(scene);
@@ -164,6 +173,14 @@ public class FXMLAdminAlumnoController implements Initializable {
             sortedAlumno.comparatorProperty().bind(tablaAlumnos.comparatorProperty());
             tablaAlumnos.setItems(sortedAlumno);
         }
+    }
+    
+    @Override
+    public void notificarOperacionExitosa(String tipoOperacion, String nombre) {
+        
+        llenarTabla();
+        textBuscar.setText("");
+        configurarBusqueda();
     }
     
 }

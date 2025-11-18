@@ -215,7 +215,7 @@ public class FXMLFormularioProfesorController implements Initializable {
             observador.notificarOperacionExitosa("editar", profesorEdicion.getNombre());
             cerrarVentana();
         }else{
-            Utilidades.mostrarAlertaSimple("Error al editar", resultado.get("error").toString(), Alert.AlertType.ERROR);
+            Utilidades.mostrarAlertaSimple("Error al editar", resultado.get("mensaje").toString(), Alert.AlertType.ERROR);
         }
     }
     

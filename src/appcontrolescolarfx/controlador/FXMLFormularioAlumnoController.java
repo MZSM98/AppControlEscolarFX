@@ -9,6 +9,7 @@ import appcontrolescolarfx.modelo.pojo.Facultad;
 import appcontrolescolarfx.modelo.pojo.Respuesta;
 import appcontrolescolarfx.utilidades.Utilidades;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -154,7 +155,7 @@ public class FXMLFormularioAlumnoController implements Initializable {
         ((Stage) textMatricula.getScene().getWindow()).close();
     }
     
-    public void inicializarDatos(IObservador observador, Alumno alumno) {
+    /*}public void inicializarDatos(IObservador observador, Alumno alumno) {
         this.observador = observador;
         this.alumnoEdicion = alumno;
         if (alumno != null) {
@@ -173,7 +174,7 @@ public class FXMLFormularioAlumnoController implements Initializable {
             
             
         }
-    }
+    }*/
 
     private int obtenerFacultadSeleccionada(int idFacultad) {
         for (int i = 0; i < facultades.size(); i++) {
@@ -247,7 +248,7 @@ public class FXMLFormularioAlumnoController implements Initializable {
             if (AlumnoImpl.verificarDuplicado(alumno.getMatricula())){
                 Utilidades.mostrarAlertaSimple("Matrícula en uso", "La matrícula (" +
                         alumno.getMatricula() +
-                        ") ya se encuentra en uso, intente con uno diferente", Alert.AlertType.WARNING);
+                        ") ya se encuentra en uso, intente con una diferente", Alert.AlertType.WARNING);
                 return;
             }
             Respuesta respuesta = AlumnoImpl.registrar(alumno);
@@ -265,6 +266,61 @@ public class FXMLFormularioAlumnoController implements Initializable {
     
     private void editarAlumno(){
         return;
+    }
+    
+    public void inicializarDatos(IObservador observador, Alumno alumno) {
+        this.observador = observador;
+        this.alumnoEdicion = alumno;
+        if (alumno != null) {
+            textMatricula.setText(alumno.getMatricula());
+            textNombre.setText(alumno.getNombre());
+            textApPaterno.setText(alumno.getApellidoPaterno());
+            textApMaterno.setText(alumno.getApellidoMaterno());
+            textCorreo.setText(alumno.getCorreo());
+            pickerNacimiento.setValue(LocalDate.parse(alumno.getFechaNacimiento()));
+
+            textMatricula.setEditable(false);
+            textMatricula.setDisable(true);
+
+            int posFacultad = obtenerFacultadSeleccionada(alumno.getIdFacultad());
+            comboFacultad.getSelectionModel().select(posFacultad);
+
+            if(posFacultad != -1){
+                cargarCarreras(null);
+                int posCarrera = obtenerCarreraSeleccionada(alumno.getIdCarrera());
+                comboCarrera.getSelectionModel().select(posCarrera);
+            }
+
+            recuperarFoto(alumno.getIdAlumno());
+        }
+    }
+    
+    private void recuperarFoto(int idAlumno){
+        HashMap<String, Object> respuesta = AlumnoImpl.obtenerFoto(idAlumno);
+        
+        try{
+            if (!(boolean)respuesta.get("error")) {
+                ByteArrayInputStream bis = new ByteArrayInputStream((byte[])respuesta.get("foto"));
+                Image img = new Image(bis);
+                imagenPerfil.setImage(img);
+            }else{
+                Utilidades.mostrarAlertaSimple("Error al cargar la foto", respuesta.get("mensaje").toString(), Alert.AlertType.NONE);
+            }
+        }catch(NullPointerException npe){
+            Utilidades.mostrarAlertaSimple("Error al cargar la foto", npe.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+        
+
+    private int obtenerCarreraSeleccionada(int idCarrera) {
+        if (carreras != null) {
+            for (int i = 0; i < carreras.size(); i++) {
+                if (carreras.get(i).getIdCarrera() == idCarrera) {
+                    return i;
+                }
+            }
+        }
+        return -1;
     }
     
 }

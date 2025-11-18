@@ -56,7 +56,7 @@ public class AlumnoDAO {
     public static ResultSet obtenerAlumnos(Connection conexionBD) throws SQLException{
         
         if(conexionBD != null){
-            String consulta = "SELECT idAlumno, nombre, apellidoPaterno, apellidoMaterno, matricula, correo, a.idCarrera, c.carrera, f.facultad, fechaNacimiento FROM alumno a "
+            String consulta = "SELECT idAlumno, nombre, apellidoPaterno, apellidoMaterno, matricula, correo, a.idCarrera, c.carrera, c.idFacultad, f.facultad, fechaNacimiento FROM alumno a "
                     + "INNER join carrera c on c.idCarrera = a.idCarrera "
                     + "INNER join facultad f on f.idFacultad = c.idFacultad;";
             PreparedStatement sentencia = conexionBD.prepareStatement(consulta);
@@ -79,7 +79,7 @@ public class AlumnoDAO {
     public static ResultSet obtenerFoto(Connection conexionBD, int idAlumno) throws SQLException{
         
         if(conexionBD != null){
-            String consulta = "SELECT foto from alumno where idAlumno ?;";
+            String consulta = "SELECT foto from alumno where idAlumno = ?;";
             PreparedStatement sentencia = conexionBD.prepareStatement(consulta);
             sentencia.setInt(1, idAlumno);
             return sentencia.executeQuery();

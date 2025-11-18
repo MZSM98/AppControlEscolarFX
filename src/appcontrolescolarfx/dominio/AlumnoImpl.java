@@ -69,8 +69,10 @@ public class AlumnoImpl {
                 alumno.setApellidoMaterno(resultado.getString("apellidoMaterno"));
                 alumno.setCorreo(resultado.getString("correo"));
                 alumno.setMatricula(resultado.getString("matricula"));
-                alumno.setCarrera(resultado.getString("c.carrera"));
-                alumno.setFacultad(resultado.getString("f.facultad"));
+                alumno.setIdCarrera(resultado.getInt("idCarrera"));
+                alumno.setCarrera(resultado.getString("carrera"));
+                alumno.setIdFacultad(resultado.getInt("idFacultad"));
+                alumno.setFacultad(resultado.getString("facultad"));
                 alumno.setFechaNacimiento(resultado.getString("fechaNacimiento"));
                 alumnos.add(alumno);
             }
@@ -92,11 +94,7 @@ public class AlumnoImpl {
             if(resultado.next()){
                 byte[] foto;
                 foto = resultado.getBytes("foto");
-                respuesta.put("error", false);
                 respuesta.put("foto", foto);
-            }else{
-                respuesta.put("error", true);
-                respuesta.put("mensaje", "No se pudo cargar la fotografía");
             }
         }catch(SQLException sqle){
             respuesta.put("error", true);

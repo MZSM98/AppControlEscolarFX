@@ -96,7 +96,7 @@ public class FXMLFormularioAlumnoController implements Initializable {
         boolean valido = true;
         String mensajeError = "Se encontraron los siguientes errores: \n";
         
-        if(fotoSeleccionada == null){
+        if(fotoSeleccionada == null && alumnoEdicion == null){
             valido = false;
             mensajeError+= "- Fotografía del alumno requerida\n";
         }
@@ -145,8 +145,12 @@ public class FXMLFormularioAlumnoController implements Initializable {
         Carrera carreraSeleccionada = comboCarrera.getSelectionModel().getSelectedItem();
         alumno.setIdCarrera(carreraSeleccionada.getIdCarrera());
         
-        byte[] fotoBytes = Files.readAllBytes(fotoSeleccionada.toPath());
-        alumno.setFoto(fotoBytes);
+        if (fotoSeleccionada != null) {
+            byte[] fotoBytes = Files.readAllBytes(fotoSeleccionada.toPath());
+            alumno.setFoto(fotoBytes);
+        } else if (alumnoEdicion != null) {
+            alumno.setFoto(alumnoEdicion.getFoto()); 
+        }
             
         return alumno;
     }
@@ -155,26 +159,6 @@ public class FXMLFormularioAlumnoController implements Initializable {
         ((Stage) textMatricula.getScene().getWindow()).close();
     }
     
-    /*}public void inicializarDatos(IObservador observador, Alumno alumno) {
-        this.observador = observador;
-        this.alumnoEdicion = alumno;
-        if (alumno != null) {
-            textMatricula.setText(alumno.getMatricula());
-            textNombre.setText(alumno.getNombre());
-            textApPaterno.setText(alumno.getApellidoPaterno());
-            textApMaterno.setText(alumno.getApellidoMaterno());
-            textCorreo.setText(alumno.getCorreo());
-            pickerNacimiento.setValue(LocalDate.parse(alumno.getFechaNacimiento()));
-
-            textMatricula.setEditable(false);
-            textMatricula.setDisable(true);
-
-            int posFacultad = obtenerFacultadSeleccionada(alumno.getIdFacultad());
-            comboFacultad.getSelectionModel().select(posFacultad);
-            
-            
-        }
-    }*/
 
     private int obtenerFacultadSeleccionada(int idFacultad) {
         for (int i = 0; i < facultades.size(); i++) {
@@ -300,9 +284,14 @@ public class FXMLFormularioAlumnoController implements Initializable {
         
         try{
             if (!(boolean)respuesta.get("error")) {
-                ByteArrayInputStream bis = new ByteArrayInputStream((byte[])respuesta.get("foto"));
+                
+                byte[] fotoBytes = (byte[]) respuesta.get("foto");
+                
+                if (fotoBytes != null && fotoBytes.length > 0) {
+                ByteArrayInputStream bis = new ByteArrayInputStream(fotoBytes);
                 Image img = new Image(bis);
                 imagenPerfil.setImage(img);
+                }
             }else{
                 Utilidades.mostrarAlertaSimple("Error al cargar la foto", respuesta.get("mensaje").toString(), Alert.AlertType.NONE);
             }

@@ -288,9 +288,9 @@ public class FXMLFormularioAlumnoController implements Initializable {
                 byte[] fotoBytes = (byte[]) respuesta.get("foto");
                 
                 if (fotoBytes != null && fotoBytes.length > 0) {
-                ByteArrayInputStream bis = new ByteArrayInputStream(fotoBytes);
-                Image img = new Image(bis);
-                imagenPerfil.setImage(img);
+                    ByteArrayInputStream bis = new ByteArrayInputStream(fotoBytes);
+                    Image img = new Image(bis);
+                    imagenPerfil.setImage(img);
                 }
             }else{
                 Utilidades.mostrarAlertaSimple("Error al cargar la foto", respuesta.get("mensaje").toString(), Alert.AlertType.NONE);

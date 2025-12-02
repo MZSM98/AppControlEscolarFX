@@ -293,7 +293,7 @@ public class FXMLFormularioAlumnoController implements Initializable {
                     imagenPerfil.setImage(img);
                 }
             }else{
-                Utilidades.mostrarAlertaSimple("Error al cargar la foto", respuesta.get("mensaje").toString(), Alert.AlertType.NONE);
+                Utilidades.mostrarAlertaSimple("Error al cargar la foto", respuesta.get("mensaje").toString(), Alert.AlertType.ERROR);
             }
         }catch(NullPointerException npe){
             Utilidades.mostrarAlertaSimple("Error al cargar la foto", npe.getMessage(), Alert.AlertType.ERROR);

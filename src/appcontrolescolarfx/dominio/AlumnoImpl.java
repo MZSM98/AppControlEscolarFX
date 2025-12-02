@@ -94,8 +94,8 @@ public class AlumnoImpl {
             if(resultado.next()){
                 byte[] foto;
                 foto = resultado.getBytes("foto");
-                respuesta.put("foto", foto);
                 respuesta.put("error", false);
+                respuesta.put("foto", foto);
             }
         }catch(SQLException sqle){
             respuesta.put("error", true);

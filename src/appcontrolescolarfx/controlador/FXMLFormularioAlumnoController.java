@@ -133,7 +133,7 @@ public class FXMLFormularioAlumnoController implements Initializable {
         return valido;
     }
     
-    private Alumno obtenerAlumno() throws IOException{
+    private Alumno obtenerAlumno() {
         Alumno alumno = new Alumno();
         alumno.setMatricula(textMatricula.getText());
         alumno.setNombre(textNombre.getText());
@@ -145,11 +145,15 @@ public class FXMLFormularioAlumnoController implements Initializable {
         Carrera carreraSeleccionada = comboCarrera.getSelectionModel().getSelectedItem();
         alumno.setIdCarrera(carreraSeleccionada.getIdCarrera());
         
-        if (fotoSeleccionada != null) {
-            byte[] fotoBytes = Files.readAllBytes(fotoSeleccionada.toPath());
-            alumno.setFoto(fotoBytes);
-        } else if (alumnoEdicion != null) {
-            alumno.setFoto(alumnoEdicion.getFoto()); 
+        try{
+            if (fotoSeleccionada != null) {
+                byte[] fotoBytes = Files.readAllBytes(fotoSeleccionada.toPath());
+                alumno.setFoto(fotoBytes);
+            } else if (alumnoEdicion != null) {
+                alumno.setFoto(alumnoEdicion.getFoto()); 
+            }
+        }catch(IOException ioe){
+            Utilidades.mostrarAlertaSimple("Error con el foto", "no se pudo cargar la foto", Alert.AlertType.ERROR);
         }
             
         return alumno;
@@ -226,8 +230,6 @@ public class FXMLFormularioAlumnoController implements Initializable {
     
     private void registrarAlumno(){
         
-        
-        try{
             Alumno alumno = obtenerAlumno();
             if (AlumnoImpl.verificarDuplicado(alumno.getMatricula())){
                 Utilidades.mostrarAlertaSimple("Matrícula en uso", "La matrícula (" +
@@ -243,13 +245,19 @@ public class FXMLFormularioAlumnoController implements Initializable {
             }else{
                 Utilidades.mostrarAlertaSimple("Error al registrar", respuesta.getMensaje(), Alert.AlertType.ERROR);
             }
-        }catch(IOException ioe){
-            Utilidades.mostrarAlertaSimple("Error con la foto", ioe.getMessage(), Alert.AlertType.ERROR);
-        }
     }
     
     private void editarAlumno(){
-        return;
+        Alumno alumnoEdicion = obtenerAlumno();
+        alumnoEdicion.setIdAlumno(this.alumnoEdicion.getIdAlumno());
+        HashMap<String, Object> resultado = AlumnoImpl.editarAlumno(alumnoEdicion);
+        if(!(boolean)resultado.get(("error"))){
+            Utilidades.mostrarAlertaSimple("Alumno editado correctamente", resultado.get("mensaje").toString(), Alert.AlertType.INFORMATION);
+            observador.notificarOperacionExitosa("editar", alumnoEdicion.getNombre());
+            cerrarVentana();
+        }else{
+            Utilidades.mostrarAlertaSimple("Error al editar", resultado.get("mensaje").toString(), Alert.AlertType.ERROR);
+        }
     }
     
     public void inicializarDatos(IObservador observador, Alumno alumno) {
